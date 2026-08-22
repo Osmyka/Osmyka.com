@@ -848,6 +848,162 @@ a { color: inherit; text-decoration: none; }
     .float-card { display: none; }
 }
 
+/* ==========================================================================
+   MOTION LAYER — counters, sequential ticks, auto-demos, scroll choreography
+   ========================================================================== */
+
+/* JS drives anchor scrolling with its own easing; native smooth would fight it */
+html.js-scroll { scroll-behavior: auto; }
+
+/* keep section titles clear of the fixed header when jumping to an anchor */
+section[id] { scroll-margin-top: 92px; }
+
+/* ---------------------------------------------------- scroll progress --- */
+.scroll-progress {
+    position: fixed; top: 0; left: 0; right: 0; height: 2px;
+    z-index: 120; pointer-events: none;
+    background: rgba(125, 180, 255, 0.08);
+}
+.scroll-progress span {
+    display: block; height: 100%; width: 100%;
+    transform: scaleX(0); transform-origin: 0 50%;
+    background: linear-gradient(90deg, var(--cyan), var(--violet));
+    box-shadow: 0 0 12px rgba(56, 225, 255, 0.8);
+}
+
+/* ------------------------------------------------------- live numbers --- */
+.hero-facts strong, .wo-chip b, .fc-value, .wo-id b {
+    font-variant-numeric: tabular-nums;
+}
+.wo-chip b {
+    display: inline-block;
+    transition: transform 0.4s var(--ease), color 0.4s;
+}
+.wo-chip b.bump { transform: translateY(-2px) scale(1.18); color: var(--cyan); }
+
+/* the "under one second" fact: a filling hairline instead of a counter */
+.fact-fast { position: relative; display: inline-flex; align-items: baseline; }
+.fact-fast i {
+    position: absolute; left: 0; right: 0; bottom: -4px; height: 2px;
+    border-radius: 2px; background: linear-gradient(90deg, var(--cyan), var(--violet));
+    transform: scaleX(0); transform-origin: 0 50%;
+}
+.hero-facts.lit .fact-fast i { animation: sweep 1.6s var(--ease) 0.3s both; }
+@keyframes sweep {
+    0% { transform: scaleX(0); opacity: 1; }
+    70% { transform: scaleX(1); opacity: 1; }
+    100% { transform: scaleX(1); opacity: 0.45; }
+}
+
+/* --------------------------------------- feature lists tick themselves --- */
+.feature-list li { --i: 0; }
+.feature-list li:nth-child(2) { --i: 1; }
+.feature-list li:nth-child(3) { --i: 2; }
+.feature-list li:nth-child(4) { --i: 3; }
+
+.feature-list li::before {
+    content: ''; position: absolute; left: 0; top: 5px;
+    width: 15px; height: 15px; border-radius: 50%;
+    background: transparent;
+    border: 1.5px solid rgba(56, 225, 255, 0.35);
+    box-shadow: none;
+    transition: background-color 0.35s var(--ease), border-color 0.35s var(--ease), box-shadow 0.35s var(--ease);
+    transition-delay: calc(var(--i) * 130ms);
+}
+.feature-list li::after {
+    content: ''; position: absolute; left: 5.2px; top: 8px;
+    width: 4px; height: 7.5px;
+    border: solid #04121a; border-width: 0 2px 2px 0;
+    transform: rotate(45deg) scale(0.2); opacity: 0;
+    transition: transform 0.4s var(--ease), opacity 0.25s linear;
+    transition-delay: calc(var(--i) * 130ms + 90ms);
+}
+.card.visible .feature-list li::before {
+    background: var(--cyan); border-color: var(--cyan);
+    box-shadow: 0 0 12px rgba(56, 225, 255, 0.55);
+}
+.card.visible .feature-list li::after { transform: rotate(45deg) scale(1); opacity: 1; }
+
+/* ------------------------------------------ service card mock previews --- */
+.mock-site span { transform-origin: 0 50%; }
+.card.visible .mock-site .mock-bar { animation: grow 0.8s var(--ease) 0.25s both; }
+.card.visible .mock-site .mock-hero { animation: grow 0.9s var(--ease) 0.35s both; }
+.card.visible .mock-site .mock-row { animation: grow 0.9s var(--ease) 0.45s both; }
+.card.visible .mock-site .mock-row.short { animation-delay: 0.55s; }
+.card.visible .mock-site .mock-cta { animation: grow 0.9s var(--ease) 0.7s both; }
+@keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+.mock-board i { transform-origin: 0 50%; }
+.card.visible .mock-board i { animation: pop 0.5s var(--ease) both; }
+.card.visible .mock-board .col:nth-child(2) i { animation-delay: 0.12s; }
+.card.visible .mock-board .col:nth-child(3) i { animation-delay: 0.24s; }
+@keyframes pop { from { transform: scale(0.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.card.visible .mock-board i.hi { animation: pop 0.5s var(--ease) 0.12s both, nudge 3.6s ease-in-out 1.4s infinite; }
+@keyframes nudge {
+    0%, 70%, 100% { transform: translateY(0); }
+    80% { transform: translateY(-4px); }
+    90% { transform: translateY(-1px); }
+}
+
+.mock-uptime span { transform-origin: 50% 100%; }
+.card.visible .mock-uptime span { animation: bars 0.9s var(--ease) both; }
+.card.visible .mock-uptime span:nth-child(1) { animation-delay: 0.05s; }
+.card.visible .mock-uptime span:nth-child(2) { animation-delay: 0.11s; }
+.card.visible .mock-uptime span:nth-child(3) { animation-delay: 0.17s; }
+.card.visible .mock-uptime span:nth-child(4) { animation-delay: 0.23s; }
+.card.visible .mock-uptime span:nth-child(5) { animation-delay: 0.29s; }
+.card.visible .mock-uptime span:nth-child(6) { animation-delay: 0.35s; }
+.card.visible .mock-uptime span:nth-child(7) { animation-delay: 0.41s; }
+.card.visible .mock-uptime span:nth-child(8) { animation-delay: 0.47s; }
+.card.visible .mock-uptime span:nth-child(9) { animation-delay: 0.53s; }
+.card.visible .mock-uptime span:nth-child(10) { animation-delay: 0.59s; }
+.card.visible .mock-uptime span:nth-child(11) { animation-delay: 0.65s; }
+.card.visible .mock-uptime span:nth-child(12) { animation-delay: 0.71s; }
+
+/* ----------------------------------------- showcase auto-play previews --- */
+/* .demo is toggled by JS on cards that are on screen, so the previews move
+   even for visitors who never hover — touch devices included. */
+.work-card.demo .pv-cal i.free { box-shadow: 0 0 12px rgba(56, 225, 255, 0.8); }
+.work-card.demo .pv-slot { transform: translateY(0); opacity: 1; }
+.work-card.demo .pv-col i.hi { transform: translateX(6px); }
+.work-card.demo .pv-cards u:nth-child(2) { transform: translateY(-5px); background: rgba(56, 225, 255, 0.14); }
+.work-card.demo .pv-cad path:first-child { animation: draw 1.4s var(--ease) both; }
+.work-card.demo .tags span { border-color: rgba(56, 225, 255, 0.28); }
+
+.pv-cal i { transition: box-shadow 0.4s var(--ease), background-color 0.4s var(--ease); }
+.work-card.visible .pv-cal i { animation: pop 0.4s var(--ease) both; }
+.work-card.visible .pv-cal i:nth-child(3n) { animation-delay: 0.06s; }
+.work-card.visible .pv-cal i:nth-child(3n+1) { animation-delay: 0.12s; }
+.work-card.visible .pv-col i { animation: pop 0.45s var(--ease) both; }
+.work-card.visible .pv-col:nth-child(2) i { animation-delay: 0.1s; }
+.work-card.visible .pv-col:nth-child(3) i { animation-delay: 0.2s; }
+.work-card.visible .pv-site b,
+.work-card.visible .pv-site i { transform-origin: 0 50%; animation: grow 0.8s var(--ease) 0.15s both; }
+.work-card.visible .pv-cards u { animation: pop 0.5s var(--ease) 0.35s both; }
+.work-card.visible .pv-cad path:first-child { animation: draw 1.6s var(--ease) 0.2s both; }
+
+/* ---------------------------------------- comparison table checkmarks --- */
+.compare-table tbody td.col-us::before {
+    display: inline-block;
+    transform: scale(0.2); opacity: 0;
+    transition: transform 0.45s var(--ease), opacity 0.3s linear;
+}
+.compare.visible tbody tr:nth-child(1) td.col-us::before { transition-delay: 0.15s; }
+.compare.visible tbody tr:nth-child(2) td.col-us::before { transition-delay: 0.3s; }
+.compare.visible tbody tr:nth-child(3) td.col-us::before { transition-delay: 0.45s; }
+.compare.visible tbody tr:nth-child(4) td.col-us::before { transition-delay: 0.6s; }
+.compare.visible tbody td.col-us::before { transform: scale(1); opacity: 1; }
+
+/* -------------------------------------------------- scroll choreography --- */
+.hero-visual, .hero-glow { will-change: transform; }
+
+/* tag chips ripple in when their card lands */
+.tags span { transform-origin: 50% 100%; }
+.card.visible .tags span, .work-card.visible .tags span { animation: pop 0.4s var(--ease) both; }
+.card.visible .tags span:nth-child(2), .work-card.visible .tags span:nth-child(2) { animation-delay: 0.07s; }
+.card.visible .tags span:nth-child(3), .work-card.visible .tags span:nth-child(3) { animation-delay: 0.14s; }
+.card.visible .tags span:nth-child(4), .work-card.visible .tags span:nth-child(4) { animation-delay: 0.21s; }
+
 /* ------------------------------------------------------ reduced motion --- */
 @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
@@ -857,6 +1013,10 @@ a { color: inherit; text-decoration: none; }
         transition-duration: 0.001ms !important;
     }
     .reveal { opacity: 1; transform: none; }
+    .scroll-progress { display: none; }
+    .feature-list li::before { background: var(--cyan); border-color: var(--cyan); }
+    .feature-list li::after { transform: rotate(45deg) scale(1); opacity: 1; }
+    .compare-table tbody td.col-us::before { transform: none; opacity: 1; }
     .hero-canvas { display: none; }
     .device, .device:hover { transform: none; }
 }

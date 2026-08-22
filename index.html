@@ -32,6 +32,7 @@
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap"></noscript>
 
 <link rel="stylesheet" href="css/styles.css?v=dev">
+<noscript><style>.reveal{opacity:1;transform:none}.scroll-progress{display:none}</style></noscript>
 
 <script type="application/ld+json">
 {
@@ -58,6 +59,7 @@
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
+<div class="scroll-progress" aria-hidden="true"><span id="scrollBar"></span></div>
 
 <!-- ===================== HEADER ===================== -->
 <header class="site-header" id="siteHeader">
@@ -124,8 +126,8 @@
         </div>
 
         <ul class="hero-facts">
-          <li><strong>99.9%</strong><span>Uptime target</span></li>
-          <li><strong>&lt;1s</strong><span>Page load</span></li>
+          <li><strong data-count-to="99.9" data-decimals="1" data-suffix="%">99.9%</strong><span>Uptime target</span></li>
+          <li><strong class="fact-fast">&lt;1s<i aria-hidden="true"></i></strong><span>Page load</span></li>
           <li><strong>All-in-one</strong><span>Build + hosting + support</span></li>
         </ul>
       </div>
@@ -159,8 +161,8 @@
             <div class="wo-progress"><span id="woBar"></span></div>
 
             <div class="wo-foot">
-              <div class="wo-chip"><b>3</b> parts reserved</div>
-              <div class="wo-chip"><b>2</b> free slots today</div>
+              <div class="wo-chip"><b id="woParts">3</b> parts reserved</div>
+              <div class="wo-chip"><b id="woSlots">2</b> free slots today</div>
               <div class="wo-chip ok" id="woNotify">SMS sent to client</div>
             </div>
           </div>
