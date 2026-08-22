@@ -30,10 +30,16 @@ jobs:
 
       # Copy only the files that belong on the live site. Anything not listed
       # here (README, _archive, .claude, workflows) stays out of the upload.
+      #
+      # The ?v=dev stamp on the CSS/JS URLs is rewritten to the commit SHA, so a
+      # deploy always produces fresh asset URLs instead of serving cached copies
+      # of the previous release from the same path.
       - name: Assemble site
         run: |
           mkdir -p dist
           cp -r index.html css js favicon.svg robots.txt sitemap.xml _headers _redirects dist/
+          sed -i "s/?v=dev/?v=${GITHUB_SHA::8}/g" dist/index.html
+          grep -o 'href="css[^"]*"\|src="js[^"]*"' dist/index.html
           ls -R dist
 
       - name: Deploy to Cloudflare Pages

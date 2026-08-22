@@ -103,6 +103,11 @@ Required repository secrets — **Settings → Secrets and variables → Actions
 When adding a new top-level asset (image, extra page, `.well-known`, …), add it to the
 `Assemble site` step of the workflow — only the files listed there are uploaded.
 
+**Cache busting.** `index.html` links its CSS/JS as `…?v=dev`; the workflow rewrites that
+stamp to the commit SHA, so every release gets fresh asset URLs. Keep the `?v=dev` suffix
+when editing those tags — without it, visitors and the Cloudflare edge can keep serving the
+previous stylesheet from the same path (`_headers` caps that at one hour as a safety net).
+
 ### Manual fallback
 
 ```powershell

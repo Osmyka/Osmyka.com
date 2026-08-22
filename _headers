@@ -5,11 +5,14 @@
   Permissions-Policy: document-domain=(), geolocation=(), microphone=(), camera=()
   Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
 
+# CSS/JS are requested with a ?v=<commit> query that changes on every deploy,
+# so a long TTL is safe. The one-hour ceiling is the safety net in case a build
+# ever ships without that version stamp - a stale copy then expires by itself.
 /css/*
-  Cache-Control: public, max-age=31536000, immutable
+  Cache-Control: public, max-age=3600, must-revalidate
 
 /js/*
-  Cache-Control: public, max-age=31536000, immutable
+  Cache-Control: public, max-age=3600, must-revalidate
 
 /favicon.svg
   Cache-Control: public, max-age=86400
