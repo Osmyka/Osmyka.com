@@ -1,0 +1,44 @@
+name: Deploy to Cloudflare Pages
+
+# Publishes the site to the existing Cloudflare Pages project "osmyka"
+# (Direct Upload project, production branch: main) on every push to main.
+#
+# Required repository secrets (Settings -> Secrets and variables -> Actions):
+#   CLOUDFLARE_API_TOKEN   - API token with the "Cloudflare Pages: Edit" permission
+#   CLOUDFLARE_ACCOUNT_ID  - Cloudflare account ID
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: pages-deploy
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  deployments: write
+
+jobs:
+  deploy:
+    name: Build and deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      # Copy only the files that belong on the live site. Anything not listed
+      # here (README, _archive, .claude, workflows) stays out of the upload.
+      - name: Assemble site
+        run: |
+          mkdir -p dist
+          cp -r index.html css js favicon.svg robots.txt sitemap.xml _headers _redirects dist/
+          ls -R dist
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=osmyka --branch=main

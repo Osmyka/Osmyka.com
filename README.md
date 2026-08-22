@@ -81,21 +81,35 @@ Then open `http://localhost:4321`.
 
 ---
 
-## 🚀 Deploy to Cloudflare Pages
+## 🚀 Deployment
 
-**Option 1 — Wrangler (one command):**
+The site runs on the Cloudflare Pages project **`osmyka`** (`osmyka.pages.dev`, `osmyka.com`).
+It is a Direct Upload project, which Cloudflare cannot convert to a native Git integration,
+so deployments are driven by GitHub Actions instead.
+
+### Automatic — push to `main`
+
+[`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) copies the shipped files into
+`dist/` and runs `wrangler pages deploy` against the `osmyka` project on every push to `main`
+(and on demand via **Actions → Deploy to Cloudflare Pages → Run workflow**).
+
+Required repository secrets — **Settings → Secrets and variables → Actions**:
+
+| Secret | Value |
+|--------|-------|
+| `CLOUDFLARE_API_TOKEN` | API token with the **Cloudflare Pages: Edit** permission (create at *My Profile → API Tokens*) |
+| `CLOUDFLARE_ACCOUNT_ID` | Account ID from the Cloudflare dashboard URL |
+
+When adding a new top-level asset (image, extra page, `.well-known`, …), add it to the
+`Assemble site` step of the workflow — only the files listed there are uploaded.
+
+### Manual fallback
 
 ```powershell
 npx wrangler pages deploy . --project-name osmyka
 ```
 
-**Option 2 — Direct Upload:** Cloudflare Dashboard → **Workers & Pages** → **Create** → **Pages** →
-**Upload assets** → drop the folder contents → **Deploy site**.
-
-**Option 3 — Git:** connect the repository under **Pages → Connect to Git**.
-Framework preset: `None`, build command: empty, output directory: `.` (no build required).
-
 ### Custom domain
 
-**Workers & Pages → osmyka → Custom domains → Set up a custom domain** → `osmyka.com` (and `www`).
+**Workers & Pages → osmyka → Custom domains** → `osmyka.com` (and `www`).
 If DNS is already on Cloudflare the records are created in one click and SSL is issued automatically.
