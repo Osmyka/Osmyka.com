@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Osmyka — Next-Gen AI & WebOS Neural Runtime</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            bg: '#040711',
+                            card: 'rgba(12, 20, 39, 0.65)',
+                            border: 'rgba(0, 240, 255, 0.18)',
+                            primary: '#00f0ff',
+                            secondary: '#7000ff',
+                            accent: '#ff007a',
+                            glow: '#00d8ff'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Space Mono', 'JetBrains Mono', 'monospace'],
+                    },
+                    boxShadow: {
+                        'neon-cyan': '0 0 25px rgba(0, 240, 255, 0.35)',
+                        'neon-purple': '0 0 25px rgba(112, 0, 255, 0.35)',
+                        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.5)',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Three.js for 3D Space Physics -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Matter.js for 2D Physics Playground -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+
+    <style>
+        body {
+            background-color: #040711;
+            color: #e2e8f0;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            cursor: crosshair;
+        }
+
+        /* Glassmorphism */
+        .glass-panel {
+            background: rgba(10, 16, 32, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 240, 255, 0.15);
+        }
+
+        .glass-panel-hover {
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .glass-panel-hover:hover {
+            border-color: rgba(0, 240, 255, 0.6);
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.3);
+            transform: translateY(-3px) scale(1.01);
+        }
+
+        /* Cyberpunk Scanline Effect */
+        .scanlines {
+            position: relative;
+        }
+        .scanlines::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            z-index: 10;
+            background-size: 100% 4px, 6px 100%;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        /* Glowing text effects */
+        .text-glow-cyan {
+            text-shadow: 0 0 15px rgba(0, 240, 255, 0.8), 0 0 30px rgba(0, 240, 255, 0.4);
+        }
+
+        /* Glitch Animation */
+        @keyframes glitch {
+            0% { transform: translate(0) }
+            20% { transform: translate(-2px, 2px) }
+            40% { transform: translate(-2px, -2px) }
+            60% { transform: translate(2px, 2px) }
+            80% { transform: translate(2px, -2px) }
+            100% { transform: translate(0) }
+        }
+        .glitch-hover:hover {
+            animation: glitch 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
+        }
+
+        /* Pointer Canvas Overlay */
+        #cursor-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #040711;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #00f0ff;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="selection:bg-cyan-500 selection:text-black">
+
+    <!-- Global Cursor Trails FX Canvas -->
+    <canvas id="cursor-canvas"></canvas>
+
+    <header class="fixed top-0 left-0 w-full z-50 glass-panel border-b border-cyan-500/20 px-4 lg:px-8 py-3 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <!-- Brand Logo with Stylized Y -->
+            <a href="#" class="flex items-center gap-2 group">
+                <div class="flex items-center font-mono font-bold text-2xl tracking-wider text-white">
+                    <span>osm</span>
+                    <!-- Interactive Stair Y -->
+                    <span class="relative inline-flex flex-col items-center justify-center mx-0.5 text-cyan-400 group-hover:scale-125 transition-transform">
+                        <span class="font-extrabold text-cyan-400 drop-shadow-[0_0_12px_rgba(0,240,255,1)]">y</span>
+                        <span class="absolute -bottom-1 w-3 h-0.5 bg-cyan-400 shadow-[0_0_8px_#00f0ff]"></span>
+                    </span>
+                    <span>ka</span>
+                </div>
+                <span class="ml-3 px-2 py-0.5 text-[9px] font-mono tracking-widest uppercase bg-cyan-500/10 text-cyan-400 border border-cyan-500/40 rounded-full shadow-neon-cyan">
+                    NEURAL OS
+                </span>
+            </a>
+
+            <!-- Quick HUD Stats -->
+            <div class="hidden md:flex items-center gap-6 font-mono text-xs text-gray-300">
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+                    <span class="text-cyan-400 font-bold">FPS: <span id="hud-fps">60</span></span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-purple-400 font-bold">PARTICLES: <span id="hud-particles">1200</span></span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-emerald-400 font-bold">STATE: ONLINE</span>
+                </div>
+            </div>
+
+            <!-- Sound Toggle & FX Trigger -->
+            <div class="flex items-center gap-3">
+                <button id="sfx-toggle" onclick="toggleAudio()" class="p-2 rounded-lg glass-panel hover:border-cyan-400 text-cyan-400 transition-all text-xs font-mono flex items-center gap-1.5">
+                    <svg id="sfx-icon" class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                        <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                    </svg>
+                    <span id="sfx-label" class="hidden sm:inline">SFX: ON</span>
+                </button>
+
+                <button onclick="triggerWarpSpeed(); playAudio('warp');" class="relative group overflow-hidden px-4 py-2 rounded-lg bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 text-black font-extrabold text-xs uppercase tracking-wider shadow-neon-cyan hover:shadow-neon-purple transition-all duration-300 glitch-hover">
+                    <span class="relative z-10 flex items-center gap-1">
+                        🚀 WARP DRIVE
+                    </span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <section id="hero" class="relative min-h-screen flex items-center justify-center pt-20 pb-10 overflow-hidden">
+        <!-- Three.js Background Canvas -->
+        <div id="three-canvas-container" class="absolute inset-0 z-0 cursor-grab active:cursor-grabbing"></div>
+
+        <!-- Minimal Hero Content -->
+        <div class="relative z-10 max-w-4xl mx-auto px-4 text-center pointer-events-none">
+            <!-- Badge -->
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-panel border border-cyan-500/40 text-cyan-300 font-mono text-xs mb-6 shadow-neon-cyan pointer-events-auto">
+                <span class="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_10px_#00f0ff] animate-pulse"></span>
+                OSMYKA ENGINE v4.2 • NEURAL SPACE RUNTIME
+            </div>
+
+            <!-- Sleek Minimal Title -->
+            <h1 class="text-5xl sm:text-7xl md:text-8xl font-black tracking-tight text-white mb-4 leading-none">
+                <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-500 text-glow-cyan">
+                    OSMYKA
+                </span>
+            </h1>
+            
+            <p class="text-sm sm:text-base font-mono text-cyan-300/80 tracking-widest uppercase mb-8">
+                // Autonomous LLM Kernel • WebOS Architecture //
+            </p>
+
+            <!-- Special FX Action Controls -->
+            <div class="flex flex-wrap items-center justify-center gap-3 pointer-events-auto">
+                <button onclick="triggerShockwave(); playAudio('boom');" class="px-6 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-mono font-bold text-xs tracking-wider uppercase transition-all shadow-neon-cyan hover:scale-105 active:scale-95 flex items-center gap-2">
+                    ⚡ HYPER SHOCKWAVE
+                </button>
+                <button onclick="toggleConstellations(); playAudio('click');" id="const-btn" class="px-6 py-3 rounded-xl glass-panel glass-panel-hover text-cyan-300 font-mono text-xs tracking-wider uppercase border border-cyan-500/30 flex items-center gap-2">
+                    🕸️ LINKS: ON
+                </button>
+                <button onclick="resetParticles(); playAudio('reset');" class="px-6 py-3 rounded-xl glass-panel glass-panel-hover text-white font-mono text-xs tracking-wider uppercase border border-purple-500/30 flex items-center gap-2">
+                    🔄 RE-ORIENT
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <section id="physics-lab" class="relative py-12 px-4 max-w-7xl mx-auto">
+        <div class="glass-panel rounded-2xl p-4 sm:p-6 border border-cyan-500/30 relative overflow-hidden shadow-2xl">
+            <!-- Header -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                <div class="flex items-center gap-2">
+                    <span class="w-3 h-3 rounded-full bg-cyan-400 shadow-[0_0_8px_#00f0ff]"></span>
+                    <h2 class="text-lg font-mono font-bold text-white uppercase tracking-wider">
+                        PHYSICS LAB // HOLD CLICK FOR BLACK HOLE
+                    </h2>
+                </div>
+
+                <!-- Sandbox Controls -->
+                <div class="flex flex-wrap items-center gap-2 font-mono text-xs">
+                    <button onclick="spawnPhysicsNode('LLM KERNEL'); playAudio('pop');" class="px-3 py-1.5 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/40 text-cyan-300 border border-cyan-500/40 transition-all">
+                        + LLM
+                    </button>
+                    <button onclick="spawnPhysicsNode('WEB OS'); playAudio('pop');" class="px-3 py-1.5 rounded-lg bg-purple-500/20 hover:bg-purple-500/40 text-purple-300 border border-purple-500/40 transition-all">
+                        + WEB OS
+                    </button>
+                    <button onclick="toggleGravity(); playAudio('click');" id="gravity-btn" class="px-3 py-1.5 rounded-lg glass-panel hover:border-cyan-400 text-gray-300 transition-all">
+                        GRAVITY: ON
+                    </button>
+                    <button onclick="explodePhysicsNodes(); playAudio('boom');" class="px-3 py-1.5 rounded-lg bg-red-500/20 hover:bg-red-500/40 text-red-300 border border-red-500/40 transition-all">
+                        💥 IMPULSE
+                    </button>
+                </div>
+            </div>
+
+            <!-- Canvas Container -->
+            <div class="relative w-full h-[380px] rounded-xl overflow-hidden border border-cyan-500/20 bg-slate-950/90 shadow-inner">
+                <div id="matter-canvas-container" class="w-full h-full"></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="architecture" class="py-12 px-4 max-w-7xl mx-auto">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 font-mono">
+            <!-- Node 1 -->
+            <div class="glass-panel glass-panel-hover p-5 rounded-xl text-center border-l-4 border-l-cyan-400">
+                <div class="text-2xl font-black text-cyan-400 mb-1">0.8ms</div>
+                <div class="text-xs text-gray-300 uppercase tracking-wider font-bold">LATENCY</div>
+                <div class="text-[10px] text-cyan-500/80 mt-2">WASM Microkernel</div>
+            </div>
+
+            <!-- Node 2 -->
+            <div class="glass-panel glass-panel-hover p-5 rounded-xl text-center border-l-4 border-l-purple-500">
+                <div class="text-2xl font-black text-purple-400 mb-1">1M+</div>
+                <div class="text-xs text-gray-300 uppercase tracking-wider font-bold">TOKENS/SEC</div>
+                <div class="text-[10px] text-purple-500/80 mt-2">LLM Mesh Pipe</div>
+            </div>
+
+            <!-- Node 3 -->
+            <div class="glass-panel glass-panel-hover p-5 rounded-xl text-center border-l-4 border-l-blue-500">
+                <div class="text-2xl font-black text-blue-400 mb-1">ASYNC</div>
+                <div class="text-xs text-gray-300 uppercase tracking-wider font-bold">NODE.JS IPC</div>
+                <div class="text-[10px] text-blue-500/80 mt-2">Non-blocking IO</div>
+            </div>
+
+            <!-- Node 4 -->
+            <div class="glass-panel glass-panel-hover p-5 rounded-xl text-center border-l-4 border-l-emerald-400">
+                <div class="text-2xl font-black text-emerald-400 mb-1">VECTOR</div>
+                <div class="text-xs text-gray-300 uppercase tracking-wider font-bold">MEMORY CLUSTER</div>
+                <div class="text-[10px] text-emerald-500/80 mt-2">Persistent DB</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="terminal" class="py-8 px-4 max-w-5xl mx-auto">
+        <div class="glass-panel rounded-xl border border-cyan-500/30 overflow-hidden shadow-neon-cyan">
+            <!-- Titlebar -->
+            <div class="bg-slate-950/90 px-4 py-2 border-b border-cyan-500/20 flex items-center justify-between font-mono text-xs">
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-red-500 inline-block"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-yellow-500 inline-block"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-green-500 inline-block"></span>
+                    <span class="text-gray-400 ml-2">osmyka-core // zsh</span>
+                </div>
+                <div class="text-cyan-400 text-[10px] uppercase">LIVE STREAM</div>
+            </div>
+
+            <!-- Console Content -->
+            <div class="p-4 font-mono text-xs bg-slate-950/95 text-cyan-300 h-48 overflow-y-auto scanlines" id="terminal-body">
+                <div class="text-emerald-400">[SYSTEM] OSMYKA HYPER ENGINE INITIALIZED</div>
+                <div id="terminal-output" class="space-y-1 mt-1"></div>
+            </div>
+
+            <!-- Quick Triggers -->
+            <div class="p-3 bg-slate-900/80 border-t border-cyan-500/20 flex flex-wrap gap-2 font-mono text-xs">
+                <button onclick="runTerminalCommand('osmyka --warp'); playAudio('warp');" class="px-2.5 py-1 rounded glass-panel hover:border-cyan-400 text-cyan-300">
+                    > osmyka --warp
+                </button>
+                <button onclick="runTerminalCommand('osmyka cluster --deploy'); playAudio('click');" class="px-2.5 py-1 rounded glass-panel hover:border-purple-400 text-purple-300">
+                    > osmyka cluster
+                </button>
+                <button onclick="clearTerminal(); playAudio('click');" class="px-2.5 py-1 rounded glass-panel hover:border-red-400 text-red-300 ml-auto">
+                    Clear
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <footer class="border-t border-cyan-500/20 py-8 px-4 glass-panel mt-12 text-center font-mono text-xs text-gray-400">
+        &copy; 2026 OSMYKA INC. • COSMIC SOFTWARE ARCHITECTURE
+    </footer>
+
+    <script>
+        // ==========================================
+        // GLOBAL CURSOR PARTICLE TRAIL CANVAS FX
+        // ==========================================
+        const cursorCanvas = document.getElementById('cursor-canvas');
+        const cCtx = cursorCanvas.getContext('2d');
+        let cursorParticles = [];
+
+        function resizeCursorCanvas() {
+            cursorCanvas.width = window.innerWidth;
+            cursorCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCursorCanvas);
+        resizeCursorCanvas();
+
+        window.addEventListener('mousemove', (e) => {
+            for (let i = 0; i < 3; i++) {
+                cursorParticles.push({
+                    x: e.clientX,
+                    y: e.clientY,
+                    vx: (Math.random() - 0.5) * 3,
+                    vy: (Math.random() - 0.5) * 3,
+                    size: Math.random() * 4 + 2,
+                    alpha: 1,
+                    color: i % 2 === 0 ? '#00f0ff' : '#7000ff'
+                });
+            }
+        });
+
+        function animateCursorParticles() {
+            cCtx.clearRect(0, 0, cursorCanvas.width, cursorCanvas.height);
+            for (let i = cursorParticles.length - 1; i >= 0; i--) {
+                const p = cursorParticles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.alpha -= 0.03;
+
+                if (p.alpha <= 0) {
+                    cursorParticles.splice(i, 1);
+                    continue;
+                }
+
+                cCtx.save();
+                cCtx.globalAlpha = p.alpha;
+                cCtx.fillStyle = p.color;
+                cCtx.shadowColor = p.color;
+                cCtx.shadowBlur = 8;
+                cCtx.beginPath();
+                cCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                cCtx.fill();
+                cCtx.restore();
+            }
+            requestAnimationFrame(animateCursorParticles);
+        }
+        animateCursorParticles();
+
+        // ==========================================
+        // WEB AUDIO SYNTHESIZER FOR CYBER SFX
+        // ==========================================
+        let soundEnabled = true;
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function toggleAudio() {
+            soundEnabled = !soundEnabled;
+            document.getElementById('sfx-label').innerText = soundEnabled ? 'SFX: ON' : 'SFX: OFF';
+            document.getElementById('sfx-toggle').classList.toggle('opacity-50', !soundEnabled);
+            if (soundEnabled) playAudio('pop');
+        }
+
+        function playAudio(type) {
+            if (!soundEnabled) return;
+            initAudio();
+            if (!audioCtx) return;
+
+            const now = audioCtx.currentTime;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            if (type === 'click') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(900, now);
+                osc.frequency.exponentialRampToValueAtTime(300, now + 0.04);
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.04);
+                osc.start(now);
+                osc.stop(now + 0.04);
+            } else if (type === 'pop') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(250, now);
+                osc.frequency.exponentialRampToValueAtTime(1400, now + 0.08);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+                osc.start(now);
+                osc.stop(now + 0.08);
+            } else if (type === 'boom') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(180, now);
+                osc.frequency.exponentialRampToValueAtTime(30, now + 0.4);
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+                osc.start(now);
+                osc.stop(now + 0.4);
+            } else if (type === 'warp') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(100, now);
+                osc.frequency.exponentialRampToValueAtTime(1800, now + 0.6);
+                gain.gain.setValueAtTime(0.25, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+                osc.start(now);
+                osc.stop(now + 0.6);
+            } else if (type === 'reset') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(500, now);
+                osc.frequency.linearRampToValueAtTime(1000, now + 0.15);
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                osc.start(now);
+                osc.stop(now + 0.15);
+            }
+        }
+
+        // ==========================================
+        // THREE.JS ADVANCED COSMIC SYSTEM
+        // ==========================================
+        let scene, camera, renderer, particles, particlePositions, particleVelocities;
+        let lineSegments, linePositions, lineGeometry;
+        const particleCount = 1200;
+        let mouseX = 0, mouseY = 0;
+        let shockwavePulse = 0;
+        let warpMode = false;
+        let showConstellations = true;
+
+        function initThreeCosmos() {
+            const container = document.getElementById('three-canvas-container');
+            if (!container) return;
+
+            scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x040711, 0.0012);
+
+            camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 1, 3000);
+            camera.position.z = 900;
+
+            renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            container.appendChild(renderer.domElement);
+
+            // Particles Geometry
+            const geometry = new THREE.BufferGeometry();
+            particlePositions = new Float32Array(particleCount * 3);
+            particleVelocities = new Float32Array(particleCount * 3);
+
+            for (let i = 0; i < particleCount; i++) {
+                particlePositions[i * 3] = (Math.random() - 0.5) * 2000;
+                particlePositions[i * 3 + 1] = (Math.random() - 0.5) * 2000;
+                particlePositions[i * 3 + 2] = (Math.random() - 0.5) * 2000;
+
+                particleVelocities[i * 3] = (Math.random() - 0.5) * 0.8;
+                particleVelocities[i * 3 + 1] = (Math.random() - 0.5) * 0.8;
+                particleVelocities[i * 3 + 2] = (Math.random() - 0.5) * 0.8;
+            }
+
+            geometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+
+            // Custom Glowing Point Texture
+            const canvas = document.createElement('canvas');
+            canvas.width = 16;
+            canvas.height = 16;
+            const ctx = canvas.getContext('2d');
+            const grad = ctx.createRadialGradient(8, 8, 0, 8, 8, 8);
+            grad.addColorStop(0, 'rgba(0, 240, 255, 1)');
+            grad.addColorStop(0.5, 'rgba(112, 0, 255, 0.6)');
+            grad.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, 16, 16);
+
+            const texture = new THREE.CanvasTexture(canvas);
+
+            const material = new THREE.PointsMaterial({
+                color: 0x00f0ff,
+                size: 9,
+                map: texture,
+                transparent: true,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false
+            });
+
+            particles = new THREE.Points(geometry, material);
+            scene.add(particles);
+
+            // Dynamic Constellation Lines
+            lineGeometry = new THREE.BufferGeometry();
+            const maxLines = 300 * 2 * 3;
+            linePositions = new Float32Array(maxLines);
+            lineGeometry.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
+
+            const lineMaterial = new THREE.LineBasicMaterial({
+                color: 0x00f0ff,
+                transparent: true,
+                opacity: 0.18,
+                blending: THREE.AdditiveBlending
+            });
+
+            lineSegments = new THREE.LineSegments(lineGeometry, lineMaterial);
+            scene.add(lineSegments);
+
+            // Central Interactive Torus Knot (AI Core)
+            const coreGeo = new THREE.TorusKnotGeometry(90, 25, 100, 16);
+            const coreMat = new THREE.MeshBasicMaterial({
+                color: 0x7000ff,
+                wireframe: true,
+                transparent: true,
+                opacity: 0.35
+            });
+            const coreMesh = new THREE.Mesh(coreGeo, coreMat);
+            coreMesh.name = 'aiCore';
+            scene.add(coreMesh);
+
+            window.addEventListener('resize', onWindowResize);
+            container.addEventListener('mousemove', onMouseMove);
+            container.addEventListener('touchmove', onTouchMove, { passive: true });
+        }
+
+        function onMouseMove(e) {
+            mouseX = (e.clientX - window.innerWidth / 2) * 0.5;
+            mouseY = (e.clientY - window.innerHeight / 2) * 0.5;
+        }
+
+        function onTouchMove(e) {
+            if (e.touches.length > 0) {
+                mouseX = (e.touches[0].clientX - window.innerWidth / 2) * 0.5;
+                mouseY = (e.touches[0].clientY - window.innerHeight / 2) * 0.5;
+            }
+        }
+
+        function triggerShockwave() {
+            shockwavePulse = 1.0;
+        }
+
+        function triggerWarpSpeed() {
+            warpMode = true;
+            setTimeout(() => { warpMode = false; }, 1800);
+        }
+
+        function toggleConstellations() {
+            showConstellations = !showConstellations;
+            lineSegments.visible = showConstellations;
+            document.getElementById('const-btn').innerText = showConstellations ? '🕸️ LINKS: ON' : '🕸️ LINKS: OFF';
+        }
+
+        function resetParticles() {
+            const positions = particles.geometry.attributes.position.array;
+            for (let i = 0; i < particleCount; i++) {
+                positions[i * 3] = (Math.random() - 0.5) * 2000;
+                positions[i * 3 + 1] = (Math.random() - 0.5) * 2000;
+                positions[i * 3 + 2] = (Math.random() - 0.5) * 2000;
+            }
+            particles.geometry.attributes.position.needsUpdate = true;
+        }
+
+        let frameCount = 0;
+        let lastTime = performance.now();
+
+        function animateThree() {
+            requestAnimationFrame(animateThree);
+
+            // FPS Counter
+            frameCount++;
+            const now = performance.now();
+            if (now - lastTime >= 1000) {
+                document.getElementById('hud-fps').innerText = frameCount;
+                frameCount = 0;
+                lastTime = now;
+            }
+
+            // Rotate Core
+            const core = scene.getObjectByName('aiCore');
+            if (core) {
+                core.rotation.x += warpMode ? 0.05 : 0.005;
+                core.rotation.y += warpMode ? 0.08 : 0.008;
+            }
+
+            // Camera Motion
+            camera.position.x += (mouseX - camera.position.x) * 0.04;
+            camera.position.y += (-mouseY - camera.position.y) * 0.04;
+            camera.lookAt(scene.position);
+
+            const positions = particles.geometry.attributes.position.array;
+
+            if (shockwavePulse > 0) {
+                shockwavePulse -= 0.02;
+            }
+
+            let lineIndex = 0;
+            const maxDist = 120;
+
+            for (let i = 0; i < particleCount; i++) {
+                let px = positions[i * 3];
+                let py = positions[i * 3 + 1];
+                let pz = positions[i * 3 + 2];
+
+                let vx = particleVelocities[i * 3] * (warpMode ? 8 : 1);
+                let vy = particleVelocities[i * 3 + 1] * (warpMode ? 8 : 1);
+                let vz = particleVelocities[i * 3 + 2] * (warpMode ? 15 : 1);
+
+                px += vx;
+                py += vy;
+                pz += vz;
+
+                // Shockwave pulse expansion
+                if (shockwavePulse > 0) {
+                    px += (px / Math.abs(px || 1)) * shockwavePulse * 15;
+                    py += (py / Math.abs(py || 1)) * shockwavePulse * 15;
+                }
+
+                // Wrap boundary
+                if (Math.abs(px) > 1200) px = -px;
+                if (Math.abs(py) > 1200) py = -py;
+                if (pz > 1000) pz = -1000;
+                if (pz < -1000) pz = 1000;
+
+                positions[i * 3] = px;
+                positions[i * 3 + 1] = py;
+                positions[i * 3 + 2] = pz;
+
+                // Constellations connection calculation (sampled for performance)
+                if (showConstellations && i % 4 === 0 && lineIndex < 1200) {
+                    for (let j = i + 1; j < particleCount; j += 8) {
+                        const dx = px - positions[j * 3];
+                        const dy = py - positions[j * 3 + 1];
+                        const dz = pz - positions[j * 3 + 2];
+                        const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+                        if (dist < maxDist) {
+                            linePositions[lineIndex++] = px;
+                            linePositions[lineIndex++] = py;
+                            linePositions[lineIndex++] = pz;
+
+                            linePositions[lineIndex++] = positions[j * 3];
+                            linePositions[lineIndex++] = positions[j * 3 + 1];
+                            linePositions[lineIndex++] = positions[j * 3 + 2];
+                        }
+                    }
+                }
+            }
+
+            particles.geometry.attributes.position.needsUpdate = true;
+            if (showConstellations) {
+                lineGeometry.attributes.position.needsUpdate = true;
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        function onWindowResize() {
+            const container = document.getElementById('three-canvas-container');
+            if (!container || !renderer || !camera) return;
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        }
+
+        // ==========================================
+        // MATTER.JS PHYSICS LAB WITH BLACK HOLE MODE
+        // ==========================================
+        let matterEngine, matterWorld, matterRender, matterRunner;
+        let gravityEnabled = true;
+        let isMouseDown = false;
+        let mousePos = { x: 0, y: 0 };
+
+        function initMatterPhysics() {
+            const container = document.getElementById('matter-canvas-container');
+            if (!container) return;
+
+            const Engine = Matter.Engine,
+                  Render = Matter.Render,
+                  Runner = Matter.Runner,
+                  Bodies = Matter.Bodies,
+                  Composite = Matter.Composite,
+                  Mouse = Matter.Mouse,
+                  MouseConstraint = Matter.MouseConstraint;
+
+            matterEngine = Engine.create();
+            matterWorld = matterEngine.world;
+
+            matterRender = Render.create({
+                element: container,
+                engine: matterEngine,
+                options: {
+                    width: container.clientWidth,
+                    height: container.clientHeight,
+                    wireframes: false,
+                    background: 'transparent'
+                }
+            });
+
+            Render.run(matterRender);
+            matterRunner = Runner.create();
+            Runner.run(matterRunner, matterEngine);
+
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+            const wallOptions = { isStatic: true, render: { fillStyle: 'transparent' } };
+
+            Composite.add(matterWorld, [
+                Bodies.rectangle(width / 2, height + 25, width, 50, wallOptions),
+                Bodies.rectangle(-25, height / 2, 50, height, wallOptions),
+                Bodies.rectangle(width + 25, height / 2, 50, height, wallOptions),
+                Bodies.rectangle(width / 2, -25, width, 50, wallOptions)
+            ]);
+
+            const presets = ['LLM KERNEL', 'WEB OS', 'NODE.JS IPC', 'VECTOR DB', 'NEURAL MESH'];
+            presets.forEach((label, idx) => {
+                spawnPhysicsNode(label, 100 + idx * 110, 80);
+            });
+
+            const mouse = Mouse.create(matterRender.canvas);
+            const mouseConstraint = MouseConstraint.create(matterEngine, {
+                mouse: mouse,
+                constraint: {
+                    stiffness: 0.2,
+                    render: { visible: true, strokeStyle: '#00f0ff' }
+                }
+            });
+
+            Composite.add(matterWorld, mouseConstraint);
+            matterRender.mouse = mouse;
+
+            // Black Hole Mouse Press Listeners
+            container.addEventListener('mousedown', (e) => { isMouseDown = true; updateMousePos(e); });
+            container.addEventListener('mouseup', () => { isMouseDown = false; });
+            container.addEventListener('mousemove', (e) => { updateMousePos(e); });
+
+            // Apply Black Hole Physics Force loop
+            Matter.Events.on(matterEngine, 'beforeUpdate', () => {
+                if (isMouseDown) {
+                    const bodies = Matter.Composite.allBodies(matterWorld);
+                    bodies.forEach(body => {
+                        if (!body.isStatic) {
+                            const dx = mousePos.x - body.position.x;
+                            const dy = mousePos.y - body.position.y;
+                            const dist = Math.sqrt(dx * dx + dy * dy);
+                            if (dist > 10) {
+                                const force = 0.0008 * body.mass;
+                                Matter.Body.applyForce(body, body.position, {
+                                    x: (dx / dist) * force,
+                                    y: (dy / dist) * force
+                                });
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
+        function updateMousePos(e) {
+            const rect = document.getElementById('matter-canvas-container').getBoundingClientRect();
+            mousePos.x = e.clientX - rect.left;
+            mousePos.y = e.clientY - rect.top;
+        }
+
+        function spawnPhysicsNode(label, x, y) {
+            if (!matterWorld) return;
+            const container = document.getElementById('matter-canvas-container');
+            const spawnX = x || Math.random() * (container.clientWidth - 200) + 100;
+            const spawnY = y || 50;
+
+            const colors = ['#00f0ff', '#7000ff', '#3b82f6', '#10b981', '#ff007a'];
+            const chosenColor = colors[Math.floor(Math.random() * colors.length)];
+
+            const body = Matter.Bodies.rectangle(spawnX, spawnY, 120, 42, {
+                chamfer: { radius: 10 },
+                restitution: 0.85,
+                friction: 0.05,
+                render: {
+                    fillStyle: '#0c1427',
+                    strokeStyle: chosenColor,
+                    lineWidth: 2
+                }
+            });
+
+            Matter.Composite.add(matterWorld, body);
+        }
+
+        function toggleGravity() {
+            if (!matterEngine) return;
+            gravityEnabled = !gravityEnabled;
+            matterEngine.gravity.y = gravityEnabled ? 1 : 0;
+            document.getElementById('gravity-btn').innerText = gravityEnabled ? 'GRAVITY: ON' : 'GRAVITY: ZERO';
+        }
+
+        function explodePhysicsNodes() {
+            if (!matterWorld) return;
+            const bodies = Matter.Composite.allBodies(matterWorld);
+            bodies.forEach(body => {
+                if (!body.isStatic) {
+                    const force = 0.08 * body.mass;
+                    Matter.Body.applyForce(body, body.position, {
+                        x: (Math.random() - 0.5) * force * 2,
+                        y: (Math.random() - 0.5) * force * 2
+                    });
+                }
+            });
+        }
+
+        function runTerminalCommand(cmd) {
+            const output = document.getElementById('terminal-output');
+            const row = document.createElement('div');
+            row.className = 'text-white font-bold';
+            row.innerText = `> ${cmd}`;
+            output.appendChild(row);
+
+            const res = document.createElement('div');
+            res.className = 'text-cyan-400 pl-3 border-l-2 border-cyan-500 my-0.5';
+
+            if (cmd.includes('--warp')) {
+                triggerWarpSpeed();
+                res.innerText = '[OK] WARP SPEED ENGAGED — VELOCITY 8.4X';
+            } else {
+                res.innerText = `[SUCCESS] ${cmd} COMPLETED (0.02ms)`;
+            }
+
+            output.appendChild(res);
+            const body = document.getElementById('terminal-body');
+            body.scrollTop = body.scrollHeight;
+        }
+
+        function clearTerminal() {
+            document.getElementById('terminal-output').innerHTML = '';
+        }
+
+        window.onload = function () {
+            initThreeCosmos();
+            animateThree();
+            initMatterPhysics();
+        };
+    </script>
+</body>
+</html>

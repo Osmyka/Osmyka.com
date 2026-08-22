@@ -1,0 +1,12 @@
+{
+  "name": "osmyka-site",
+  "version": "2.0.0",
+  "description": "Osmyka OU - custom CRM, booking platforms and turnkey web development for auto repair shops and service SMBs",
+  "scripts": {
+    "dev": "npx serve .",
+    "preview": "npx serve .",
+    "deploy": "npx wrangler pages deploy . --project-name osmyka"
+  },
+  "keywords": ["osmyka", "crm", "booking", "auto-repair", "web-development", "cloudflare-pages"],
+  "license": "MIT"
+}

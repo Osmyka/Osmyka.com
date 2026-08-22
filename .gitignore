@@ -1,0 +1,11 @@
+# Dependencies
+node_modules/
+
+# Local tooling / OS
+.claude/settings.local.json
+.DS_Store
+Thumbs.db
+*.log
+
+# Cloudflare / Wrangler
+.wrangler/
