@@ -1,95 +1,101 @@
-# Osmyka OÜ — сайт-визитка и витрина продуктов
+# Osmyka OÜ — product & services site
 
-Одностраничный сайт студии **Osmyka OÜ** (Таллинн, Эстония): веб-разработка под ключ,
-кастомные CRM/ERP для автосервисов и малого бизнеса, онлайн-бронирование,
-хостинг и сопровождение по подписке.
+Single-page website for **Osmyka OÜ** (Tallinn, Estonia): turnkey web development,
+custom CRM/ERP systems for auto repair shops and small businesses, online booking,
+plus hosting and maintenance on a subscription.
 
-Стек: **чистый HTML + CSS + vanilla JS**, без сборки и без внешних библиотек.
-Одна страница = 3 локальных файла (HTML/CSS/JS) + шрифты Google Fonts.
+Stack: **plain HTML + CSS + vanilla JS** — no build step, no external libraries.
+The whole page is three local files (HTML/CSS/JS) plus Google Fonts.
 
 ---
 
-## 📁 Структура
+## 📁 Structure
 
 ```text
 osmyka.com/
-├── index.html          # Вся страница: 7 секций + SEO/OG-разметка + JSON-LD
-├── css/styles.css      # Дизайн-система (токены, стекло, свечения, адаптив, reduced-motion)
+├── index.html          # Whole page: 7 sections + SEO/OG meta + JSON-LD
+├── css/styles.css      # Design system (tokens, glass, glows, responsive, reduced-motion)
 ├── js/
-│   ├── background.js   # Canvas-фон героя: сеть частиц (без библиотек, ~3 КБ)
-│   └── app.js          # Хедер, мобильное меню, scroll-reveal, виджет заказ-наряда, форма
+│   ├── background.js   # Hero canvas background: particle network (no libraries, ~5 KB)
+│   └── app.js          # Header, mobile nav, scroll reveal, work-order widget, form
 ├── favicon.svg
 ├── robots.txt / sitemap.xml
-├── _headers            # Заголовки безопасности и кеширования (Cloudflare Pages)
-├── _redirects          # SPA-фолбэк
-└── _archive/           # Прошлая версия лендинга (Three.js/Matter.js/терминал) — можно удалить
+├── _headers            # Security and caching headers (Cloudflare Pages)
+├── _redirects          # SPA fallback
+└── _archive/           # Previous landing page (Three.js/Matter.js/terminal) — safe to delete
 ```
 
 ---
 
-## 🧭 Структура страницы (соответствие ТЗ)
+## 🧭 Page sections
 
-| # | Секция | Якорь | Что внутри |
-|---|--------|-------|-----------|
-| 1 | Hero | `#hero` | Заголовок-оффер, подзаголовок, 2 CTA, живой виджет заказ-наряда + карточка свободного слота |
-| 2 | Фокус на автосервисах | `#automotive` | `autobook`, `crm`, plug-and-play обслуживание |
-| 3 | Услуги | `#services` | Сайты под ключ, кастомная CRM + автоматизация, хостинг и поддержка |
-| 4 | Живые продукты | `#work` | AutoBook Engine, AutoService CRM, JAB Point, CADAutoScript (интерактивные превью при hover) |
-| 5 | Почему Osmyka | `#why` | Сравнительная таблица «монолитная CRM vs кастомное решение» (на мобильных — карточки) |
-| 6 | Технологии | `#stack` | Frontend / Backend & API / DevOps & Security |
-| 7 | Контакты | `#contact` | Форма консультации + юридические данные в футере |
-
----
-
-## ✅ Что нужно дозаполнить
-
-1. **Приём заявок с формы.** По умолчанию форма валидируется на клиенте и открывает
-   почтовый клиент посетителя (`mailto:info@osmyka.com`). Чтобы принимать заявки на сервере,
-   укажите endpoint в `js/app.js`:
-   ```js
-   var FORM_ENDPOINT = ''; // → 'https://…' (Cloudflare Pages Function, Formspree и т.п.)
-   ```
-   Форма отправит `POST` с JSON: `fullName, business, email, phone, need, message`.
+| # | Section | Anchor | Contents |
+|---|---------|--------|----------|
+| 1 | Hero | `#hero` | Value proposition, sub-headline, two CTAs, live work-order widget + free-slot card |
+| 2 | Automotive focus | `#automotive` | `autobook`, `crm`, plug-and-play maintenance |
+| 3 | Services | `#services` | Turnkey websites, custom CRM + automation, hosting and support |
+| 4 | Live products | `#work` | AutoBook Engine, AutoService CRM, JAB Point, CADAutoScript (interactive hover previews) |
+| 5 | Why Osmyka | `#why` | Comparison table "monolithic CRM vs custom solution" (stacked cards on mobile) |
+| 6 | Technology | `#stack` | Frontend / Backend & API / DevOps & Security |
+| 7 | Contact | `#contact` | Consultation form + legal details in the footer |
 
 ---
 
-## ⚡ Производительность и доступность
+## ✅ Still to configure
 
-- Нет Tailwind CDN, Three.js и Matter.js — только собственный CSS/JS (цель Lighthouse ≥ 90 по всем метрикам).
-- Анимации — только на `transform` / `opacity`; фон на canvas ставится на паузу вне экрана и в фоновой вкладке.
-- `prefers-reduced-motion: reduce` полностью отключает canvas-фон, параллакс и повторяющиеся анимации.
-- Canvas отключается на слабых устройствах (`hardwareConcurrency ≤ 2` или `deviceMemory ≤ 2`).
-- Семантическая разметка, skip-link, подписи ко всем полям, контраст текста ≥ 4.5:1.
+**Form submissions.** By default the form validates on the client and opens the
+visitor's own mail client (`mailto:info@osmyka.com`). To receive submissions
+server-side, set an endpoint in `js/app.js`:
+
+```js
+var FORM_ENDPOINT = ''; // → 'https://…' (Cloudflare Pages Function, Formspree, etc.)
+```
+
+The form then sends a `POST` with JSON: `fullName, business, email, phone, need, message`.
 
 ---
 
-## 💻 Локальный запуск
+## ⚡ Performance & accessibility
+
+- No Tailwind CDN, Three.js or Matter.js — only first-party CSS/JS (targeting Lighthouse ≥ 90 across all categories).
+- Animations run on `transform` / `opacity` only; the canvas background pauses off-screen and in background tabs.
+- `prefers-reduced-motion: reduce` fully disables the canvas background, parallax and looping animations.
+- The canvas is skipped on low-power devices (`hardwareConcurrency ≤ 2` or `deviceMemory ≤ 2`).
+- Semantic markup, skip link, labels on every field, text contrast ≥ 4.5:1.
+
+---
+
+## 💻 Run locally
 
 ```powershell
 npm run dev
 ```
-или
+
+or
 
 ```powershell
 python -m http.server 4321
 ```
-Затем откройте `http://localhost:4321`.
+
+Then open `http://localhost:4321`.
 
 ---
 
-## 🚀 Деплой на Cloudflare Pages
+## 🚀 Deploy to Cloudflare Pages
 
-**Вариант 1 — Wrangler (одна команда):**
+**Option 1 — Wrangler (one command):**
+
 ```powershell
 npx wrangler pages deploy . --project-name osmyka
 ```
 
-**Вариант 2 — Direct Upload:** Cloudflare Dashboard → **Workers & Pages** → **Create** → **Pages** →
-**Upload assets** → перетащить содержимое папки → **Deploy site**.
+**Option 2 — Direct Upload:** Cloudflare Dashboard → **Workers & Pages** → **Create** → **Pages** →
+**Upload assets** → drop the folder contents → **Deploy site**.
 
-**Вариант 3 — Git:** подключить репозиторий в **Pages → Connect to Git**.
-Framework preset: `None`, build command: пусто, output directory: `.` (сборка не нужна).
+**Option 3 — Git:** connect the repository under **Pages → Connect to Git**.
+Framework preset: `None`, build command: empty, output directory: `.` (no build required).
 
-### Домен
-**Workers & Pages → osmyka → Custom domains → Set up a custom domain** → `osmyka.com` (и `www`).
-Если DNS уже в Cloudflare — записи создаются в один клик, SSL выпускается автоматически.
+### Custom domain
+
+**Workers & Pages → osmyka → Custom domains → Set up a custom domain** → `osmyka.com` (and `www`).
+If DNS is already on Cloudflare the records are created in one click and SSL is issued automatically.
