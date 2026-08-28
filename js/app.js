@@ -59,26 +59,56 @@
         Array.prototype.forEach.call(revealables, function (el) { revealObserver.observe(el); });
     }
 
-    /* ------------------------------------------------ active nav link --- */
-    var navLinks = document.querySelectorAll('.site-nav a[href^="#"]:not(.btn)');
-    if ('IntersectionObserver' in window && navLinks.length) {
-        var linkMap = {};
-        Array.prototype.forEach.call(navLinks, function (a) {
-            linkMap[a.getAttribute('href').slice(1)] = a;
+    /* ------------------------------------------------ active nav links -- */
+    var topNavLinks = document.querySelectorAll('.site-nav a[href^="#"]:not(.btn)');
+    var bottomBarLinks = document.querySelectorAll('.bottom-bar-link');
+
+    var BOTTOM_SECTION_MAP = {
+        'hero': 'hero',
+        'automotive': 'automotive',
+        'services': 'services',
+        'work': 'work',
+        'why': 'work',
+        'stack': 'services',
+        'contact': 'contact'
+    };
+
+    function setActiveNav(activeId) {
+        if (!activeId) return;
+
+        // Top nav active state
+        Array.prototype.forEach.call(topNavLinks, function (a) {
+            var id = a.getAttribute('href').slice(1);
+            a.classList.toggle('active', id === activeId);
         });
+
+        // Bottom bar active state
+        var bottomTargetId = BOTTOM_SECTION_MAP[activeId] || activeId;
+        Array.prototype.forEach.call(bottomBarLinks, function (b) {
+            var id = b.getAttribute('href').slice(1);
+            var isActive = id === bottomTargetId;
+            b.classList.toggle('active', isActive);
+            if (isActive) {
+                b.setAttribute('aria-current', 'page');
+            } else {
+                b.removeAttribute('aria-current');
+            }
+        });
+    }
+
+    if ('IntersectionObserver' in window) {
+        var observedSectionIds = ['hero', 'automotive', 'services', 'work', 'why', 'stack', 'contact'];
         var sectionObserver = new IntersectionObserver(function (entries) {
             entries.forEach(function (entry) {
-                var link = linkMap[entry.target.id];
-                if (!link) return;
                 if (entry.isIntersecting) {
-                    Array.prototype.forEach.call(navLinks, function (a) { a.classList.remove('active'); });
-                    link.classList.add('active');
+                    setActiveNav(entry.target.id);
                 }
             });
-        }, { rootMargin: '-45% 0px -50% 0px' });
-        Object.keys(linkMap).forEach(function (id) {
-            var section = document.getElementById(id);
-            if (section) sectionObserver.observe(section);
+        }, { rootMargin: '-35% 0px -45% 0px', threshold: 0.05 });
+
+        observedSectionIds.forEach(function (id) {
+            var sec = document.getElementById(id);
+            if (sec) sectionObserver.observe(sec);
         });
     }
 
@@ -247,7 +277,12 @@
     (function anchorScroll() {
         document.documentElement.classList.add('js-scroll');
 
-        var HEADER_OFFSET = 84;
+        function getHeaderOffset() {
+            var h = document.getElementById('siteHeader');
+            if (h) return h.offsetHeight + 14;
+            return window.innerWidth <= 860 ? 64 : 84;
+        }
+
         var animating = false;
 
         function easeInOutCubic(t) {
@@ -304,7 +339,7 @@
 
             e.preventDefault();
             closeNav();
-            glideTo(target.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET, hash);
+            glideTo(target.getBoundingClientRect().top + window.scrollY - getHeaderOffset(), hash);
         });
     })();
 

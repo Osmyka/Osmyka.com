@@ -21,7 +21,8 @@
 
     var ctx = canvas.getContext('2d', { alpha: true });
     var hero = canvas.parentElement;
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var isMobile = window.innerWidth < 768;
+    var dpr = Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2);
 
     var w = 0, h = 0;
     var nodes = [];
@@ -30,14 +31,14 @@
     var visible = true;
     var rafId = null;
 
-    var LINK_DIST = 130;
+    var LINK_DIST = isMobile ? 100 : 130;
     var CYAN = '56, 225, 255';
     var VIOLET = '139, 123, 255';
 
     function nodeCount() {
         var area = w * h;
-        var base = Math.round(area / 17000);
-        return Math.max(28, Math.min(base, window.innerWidth < 760 ? 42 : 92));
+        var base = Math.round(area / (isMobile ? 22000 : 17000));
+        return Math.max(16, Math.min(base, isMobile ? 26 : 92));
     }
 
     function build() {
