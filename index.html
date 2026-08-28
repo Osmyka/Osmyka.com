@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Osmyka OÜ | Custom CRM &amp; Modern Web Development for Small Business</title>
 <meta name="description" content="Tailored software, booking platforms, and custom CRM systems engineered for auto repair shops and service businesses. Based in Tallinn, Estonia.">
 <meta name="theme-color" content="#050912">
@@ -524,25 +524,25 @@
       <form class="contact-form reveal" id="contactForm" novalidate>
         <div class="field">
           <label for="fullName">Full name</label>
-          <input id="fullName" name="fullName" type="text" autocomplete="name" required placeholder="Jaan Tamm">
+          <input id="fullName" name="fullName" type="text" autocomplete="name" autocapitalize="words" required placeholder="Jaan Tamm">
           <p class="err" data-err="fullName"></p>
         </div>
 
         <div class="field">
           <label for="business">Business name / type</label>
-          <input id="business" name="business" type="text" autocomplete="organization" required placeholder="e.g. Auto repair, retail, service">
+          <input id="business" name="business" type="text" autocomplete="organization" autocapitalize="sentences" required placeholder="e.g. Auto repair, retail, service">
           <p class="err" data-err="business"></p>
         </div>
 
         <div class="field-row">
           <div class="field">
             <label for="email">Email address</label>
-            <input id="email" name="email" type="email" autocomplete="email" required placeholder="you@company.com">
+            <input id="email" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" required placeholder="you@company.com">
             <p class="err" data-err="email"></p>
           </div>
           <div class="field">
             <label for="phone">Phone number</label>
-            <input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="+372 5xxx xxxx">
+            <input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+372 5xxx xxxx">
             <p class="err" data-err="phone"></p>
           </div>
         </div>
@@ -611,6 +611,68 @@
     <p class="mono">Built in Tallinn · Hosted on the edge</p>
   </div>
 </footer>
+
+<!-- ===================== MOBILE BOTTOM BAR ===================== -->
+<nav class="bottom-bar" id="bottomBar" aria-label="Mobile navigation">
+  <div class="bottom-bar-inner">
+    <a href="#hero" class="bottom-bar-link active" data-section="hero" aria-label="Home">
+      <span class="bottom-bar-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 10.5 12 3l9 7.5V20a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-9.5z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+          <circle cx="12" cy="7.5" r="1.2" fill="currentColor" stroke="none"/>
+        </svg>
+      </span>
+      <span class="bottom-bar-label">Home</span>
+    </a>
+
+    <a href="#automotive" class="bottom-bar-link" data-section="automotive" aria-label="Auto Shops">
+      <span class="bottom-bar-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+          <circle cx="6" cy="18" r="1.5" fill="currentColor" stroke="none"/>
+        </svg>
+      </span>
+      <span class="bottom-bar-label">Auto Shops</span>
+    </a>
+
+    <a href="#services" class="bottom-bar-link" data-section="services" aria-label="Services">
+      <span class="bottom-bar-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+          <polyline points="2 17 12 22 22 17"/>
+          <polyline points="2 12 12 17 22 12"/>
+        </svg>
+      </span>
+      <span class="bottom-bar-label">Services</span>
+    </a>
+
+    <a href="#work" class="bottom-bar-link" data-section="work" aria-label="Live Demos">
+      <span class="bottom-bar-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="3.5"/>
+          <path d="M3 9h18"/>
+          <path d="M9 21V9"/>
+          <circle cx="6" cy="6" r="1.2" fill="currentColor" stroke="none"/>
+          <circle cx="15.5" cy="15" r="2.2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+          <path d="m17 16.5 2 2"/>
+        </svg>
+      </span>
+      <span class="bottom-bar-label">Demos</span>
+    </a>
+
+    <a href="#contact" class="bottom-bar-link bottom-bar-cta" data-section="contact" aria-label="Book Consultation">
+      <span class="bottom-bar-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          <path d="M12 7v4"/>
+          <circle cx="12" cy="14" r="1" fill="currentColor" stroke="none"/>
+        </svg>
+      </span>
+      <span class="bottom-bar-label">Contact</span>
+    </a>
+  </div>
+</nav>
 
 <script src="js/background.js?v=dev" defer></script>
 <script src="js/app.js?v=dev" defer></script>
