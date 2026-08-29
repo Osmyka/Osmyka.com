@@ -7,6 +7,16 @@
     "preview": "npx serve .",
     "deploy": "npx wrangler pages deploy . --project-name osmyka"
   },
-  "keywords": ["osmyka", "crm", "booking", "auto-repair", "web-development", "cloudflare-pages"],
-  "license": "MIT"
+  "keywords": [
+    "osmyka",
+    "crm",
+    "booking",
+    "auto-repair",
+    "web-development",
+    "cloudflare-pages"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "playwright": "^1.62.1"
+  }
 }

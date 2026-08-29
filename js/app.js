@@ -518,6 +518,68 @@
         });
     })();
 
+    /* ---------------------------------------------------- theme manager -- */
+    (function themeManager() {
+        var metaTheme = document.querySelector('meta[name="theme-color"]');
+        var toggles = document.querySelectorAll('.theme-toggle');
+
+        function getCurrentTheme() {
+            var explicit = document.documentElement.getAttribute('data-theme');
+            if (explicit) return explicit;
+            try {
+                var saved = localStorage.getItem('osmyka-theme');
+                if (saved) return saved;
+            } catch (e) {}
+            return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        }
+
+        function applyTheme(theme, persist) {
+            document.documentElement.setAttribute('data-theme', theme);
+            if (metaTheme) {
+                metaTheme.setAttribute('content', theme === 'light' ? '#f8fafc' : '#050912');
+            }
+            if (persist) {
+                try {
+                    localStorage.setItem('osmyka-theme', theme);
+                } catch (e) {}
+            }
+            var nextLabel = theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme';
+            Array.prototype.forEach.call(toggles, function (btn) {
+                btn.setAttribute('aria-label', nextLabel);
+                btn.setAttribute('title', nextLabel);
+            });
+            window.dispatchEvent(new CustomEvent('themechange', { detail: { theme: theme } }));
+        }
+
+        function toggleTheme() {
+            var current = getCurrentTheme();
+            var next = current === 'light' ? 'dark' : 'light';
+            applyTheme(next, true);
+        }
+
+        Array.prototype.forEach.call(toggles, function (btn) {
+            btn.addEventListener('click', toggleTheme);
+        });
+
+        try {
+            var media = window.matchMedia('(prefers-color-scheme: light)');
+            var handleMediaChange = function (e) {
+                try {
+                    if (!localStorage.getItem('osmyka-theme')) {
+                        applyTheme(e.matches ? 'light' : 'dark', false);
+                    }
+                } catch (err) {}
+            };
+            if (media.addEventListener) {
+                media.addEventListener('change', handleMediaChange);
+            } else if (media.addListener) {
+                media.addListener(handleMediaChange);
+            }
+        } catch (e) {}
+
+        applyTheme(getCurrentTheme(), false);
+    })();
+
     /* ------------------------------------------------------------ misc -- */
     var year = document.getElementById('year');
     if (year) year.textContent = String(new Date().getFullYear());

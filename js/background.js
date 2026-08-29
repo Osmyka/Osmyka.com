@@ -1,6 +1,7 @@
 /**
  * Osmyka — hero background.
  * Lightweight canvas particle network (no external libraries, ~3 KB).
+ * Supports dynamic Dark / Light theme palettes with themechange event.
  * Degrades gracefully: disabled for reduced-motion users and low-power devices,
  * paused when the hero scrolls out of view or the tab is hidden.
  */
@@ -34,6 +35,25 @@
     var LINK_DIST = isMobile ? 100 : 130;
     var CYAN = '56, 225, 255';
     var VIOLET = '139, 123, 255';
+    var NODE_ALPHA = '0.65';
+    var LINK_ALPHA_BASE = 0.16;
+
+    function updateThemePalette() {
+        var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        if (isLight) {
+            CYAN = '2, 132, 199';
+            VIOLET = '99, 102, 241';
+            NODE_ALPHA = '0.55';
+            LINK_ALPHA_BASE = 0.20;
+        } else {
+            CYAN = '56, 225, 255';
+            VIOLET = '139, 123, 255';
+            NODE_ALPHA = '0.65';
+            LINK_ALPHA_BASE = 0.16;
+        }
+    }
+    updateThemePalette();
+    window.addEventListener('themechange', updateThemePalette);
 
     function nodeCount() {
         var area = w * h;
@@ -111,7 +131,7 @@
                 if (dx > LINK_DIST || dx < -LINK_DIST || dy > LINK_DIST || dy < -LINK_DIST) continue;
                 dist = Math.sqrt(dx * dx + dy * dy);
                 if (dist > LINK_DIST) continue;
-                ctx.strokeStyle = 'rgba(' + CYAN + ',' + (0.16 * (1 - dist / LINK_DIST)).toFixed(3) + ')';
+                ctx.strokeStyle = 'rgba(' + CYAN + ',' + (LINK_ALPHA_BASE * (1 - dist / LINK_DIST)).toFixed(3) + ')';
                 ctx.beginPath();
                 ctx.moveTo(a.x, a.y);
                 ctx.lineTo(b.x, b.y);
@@ -122,7 +142,7 @@
         // nodes
         for (i = 0; i < nodes.length; i++) {
             a = nodes[i];
-            ctx.fillStyle = 'rgba(' + (a.violet ? VIOLET : CYAN) + ', 0.65)';
+            ctx.fillStyle = 'rgba(' + (a.violet ? VIOLET : CYAN) + ', ' + NODE_ALPHA + ')';
             ctx.beginPath();
             ctx.arc(a.x, a.y, a.r, 0, Math.PI * 2);
             ctx.fill();
