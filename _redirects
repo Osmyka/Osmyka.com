@@ -1,3 +1,5 @@
 # Cloudflare Pages redirects
-# Single-page site: unknown paths fall back to the landing page.
-/*    /index.html   200
+/privacy    /privacy.html   200
+/terms      /terms.html     200
+/*          /index.html     200
+

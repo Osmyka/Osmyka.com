@@ -37,8 +37,8 @@ jobs:
       - name: Assemble site
         run: |
           mkdir -p dist
-          cp -r index.html css js favicon.svg robots.txt sitemap.xml _headers _redirects dist/
-          sed -i "s/?v=dev/?v=${GITHUB_SHA::8}/g" dist/index.html
+          cp -r *.html legal css js favicon.svg robots.txt sitemap.xml _headers _redirects dist/
+          sed -i "s/?v=dev/?v=${GITHUB_SHA::8}/g" dist/*.html
           grep -o 'href="css[^"]*"\|src="js[^"]*"' dist/index.html
           ls -R dist
 
