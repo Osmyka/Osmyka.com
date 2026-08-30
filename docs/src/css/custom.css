@@ -2,6 +2,7 @@
  * ============================================================================
  * OSMYKA — Docusaurus Custom Theme & Brand Identity Styles
  * Synchronized with Osmyka design tokens, typography, and dark/light palettes.
+ * Complete mobile responsive ergonomics and craft bottom action bar.
  * ============================================================================
  */
 
@@ -26,7 +27,7 @@
   --ifm-background-color: #050912;
   --ifm-background-surface-color: #0b1322;
   --ifm-card-background-color: #0e1628;
-  --ifm-navbar-background-color: rgba(5, 9, 18, 0.82);
+  --ifm-navbar-background-color: rgba(5, 9, 18, 0.86);
   --ifm-footer-background-color: #070d1a;
 
   --ifm-toc-border-color: rgba(125, 180, 255, 0.12);
@@ -44,6 +45,7 @@
   --osmyka-line: rgba(125, 180, 255, 0.14);
   --osmyka-line-strong: rgba(56, 225, 255, 0.35);
   --osmyka-chip-bg: rgba(125, 180, 255, 0.07);
+  --osmyka-bottom-bar-bg: rgba(5, 9, 18, 0.92);
 }
 
 /* Light Theme Overrides */
@@ -59,7 +61,7 @@
   --ifm-background-color: #f8fafc;
   --ifm-background-surface-color: #ffffff;
   --ifm-card-background-color: #ffffff;
-  --ifm-navbar-background-color: rgba(248, 250, 252, 0.88);
+  --ifm-navbar-background-color: rgba(248, 250, 252, 0.92);
   --ifm-footer-background-color: #f1f5f9;
 
   --ifm-toc-border-color: rgba(15, 23, 42, 0.08);
@@ -72,6 +74,7 @@
   --osmyka-line: rgba(15, 23, 42, 0.08);
   --osmyka-line-strong: rgba(2, 132, 199, 0.35);
   --osmyka-chip-bg: rgba(15, 23, 42, 0.04);
+  --osmyka-bottom-bar-bg: rgba(255, 255, 255, 0.94);
 }
 
 /* ------------------------------------------------------------- Navbar --- */
@@ -187,7 +190,7 @@
 
 /* --------------------------------------------------- Custom Portal UI --- */
 .portal-hero {
-  padding: 80px 0 60px;
+  padding: 80px 0 50px;
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -289,4 +292,271 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
+}
+
+/* ==========================================================================
+   MOBILE CRAFT BOTTOM ACTION BAR (.docs-bottom-bar)
+   ========================================================================== */
+.docs-bottom-bar {
+  display: none;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+  background: var(--osmyka-bottom-bar-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--osmyka-line);
+  padding: 6px 8px calc(6px + env(safe-area-inset-bottom, 0px));
+  box-shadow: 0 -10px 32px rgba(0, 0, 0, 0.75), 0 -1px 0 rgba(56, 225, 255, 0.12);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+[data-theme='light'] .docs-bottom-bar {
+  box-shadow: 0 -10px 30px rgba(15, 23, 42, 0.08), 0 -1px 0 rgba(2, 132, 199, 0.12);
+}
+
+.docs-bottom-bar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  max-width: 520px;
+  margin-inline: auto;
+  gap: 4px;
+}
+
+.docs-bottom-link {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  flex: 1;
+  min-width: 48px;
+  height: 52px;
+  padding: 3px 4px;
+  border-radius: 12px;
+  color: var(--ifm-color-gray-500);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-align: center;
+  user-select: none;
+  -webkit-user-select: none;
+  text-decoration: none !important;
+  transition: color 0.22s ease, transform 0.18s ease, background-color 0.22s ease;
+}
+
+.docs-bottom-link:active {
+  transform: scale(0.92);
+}
+
+.docs-bottom-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  color: inherit;
+  transition: transform 0.25s ease, color 0.25s ease;
+}
+
+.docs-bottom-icon svg {
+  display: block;
+  width: 21px;
+  height: 21px;
+  transition: transform 0.25s ease, stroke 0.25s ease;
+}
+
+.docs-bottom-label {
+  line-height: 1;
+  white-space: nowrap;
+  font-family: var(--ifm-font-family-base);
+  font-size: 10.5px;
+  transition: color 0.22s;
+}
+
+.docs-bottom-link.active {
+  color: var(--osmyka-cyan);
+}
+
+.docs-bottom-link.active .docs-bottom-icon {
+  transform: translateY(-2px);
+  filter: drop-shadow(0 0 8px rgba(56, 225, 255, 0.75));
+}
+
+[data-theme='light'] .docs-bottom-link.active .docs-bottom-icon {
+  filter: drop-shadow(0 1px 6px rgba(2, 132, 199, 0.5));
+}
+
+.docs-bottom-link.active .docs-bottom-label {
+  color: var(--ifm-font-color-base);
+  font-weight: 700;
+}
+
+.docs-bottom-link.active::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  width: 14px;
+  height: 2.5px;
+  border-radius: 99px;
+  background: var(--osmyka-cyan);
+  box-shadow: 0 0 10px var(--osmyka-cyan);
+}
+
+.docs-bottom-cta {
+  color: var(--ifm-color-gray-500);
+}
+
+.docs-bottom-cta .docs-bottom-icon {
+  color: var(--osmyka-cyan);
+}
+
+/* ==========================================================================
+   MOBILE & NARROW VIEWPORT ADJUSTMENTS (< 996px and < 480px)
+   ========================================================================== */
+@media (max-width: 996px) {
+  body {
+    padding-bottom: calc(66px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  .docs-bottom-bar {
+    display: block;
+  }
+
+  /* Clean up top navbar on mobile: hide duplicate main-site button */
+  .header-back-main-link {
+    display: none !important;
+  }
+
+  /* Prevent mobile navbar brand clash */
+  .navbar__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+  }
+
+  .navbar__brand {
+    margin-right: 0;
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Navbar sidebar drawer cleanup */
+  .navbar-sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    background: var(--ifm-background-color) !important;
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-right: 1px solid var(--osmyka-line);
+    z-index: 10005 !important;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .navbar-sidebar__brand {
+    flex-shrink: 0;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--osmyka-line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--ifm-navbar-height);
+  }
+
+  .navbar-sidebar__close {
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    color: var(--ifm-color-gray-500);
+  }
+  
+  .navbar-sidebar__close:hover,
+  .navbar-sidebar__close:active {
+    color: var(--osmyka-cyan);
+    background: var(--osmyka-chip-bg);
+  }
+
+  .navbar-sidebar__items {
+    padding-bottom: 90px;
+  }
+
+  .navbar-sidebar__item {
+    padding: 14px 16px;
+  }
+
+  .navbar-sidebar__back {
+    margin-bottom: 12px;
+    border-radius: 8px;
+    background: var(--osmyka-chip-bg);
+    color: var(--osmyka-cyan);
+    font-weight: 600;
+    border: 1px solid var(--osmyka-line);
+  }
+
+  /* TOC on mobile */
+  .theme-doc-toc-mobile {
+    margin: 16px 0 24px;
+    border-radius: 12px;
+    border: 1px solid var(--osmyka-line);
+    background: var(--ifm-card-background-color);
+  }
+}
+
+@media (max-width: 480px) {
+  .portal-hero {
+    padding: 48px 0 32px;
+  }
+
+  .portal-hero-title {
+    font-size: 2.1rem;
+  }
+
+  .portal-hero-sub {
+    font-size: 1rem;
+    margin-bottom: 24px;
+  }
+
+  .portal-hero .button {
+    display: block;
+    width: 100%;
+    margin-right: 0 !important;
+    margin-bottom: 10px;
+  }
+
+  .portal-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .portal-card {
+    padding: 22px 18px;
+  }
+
+  .theme-doc-markdown h1 {
+    font-size: 1.85rem;
+  }
+
+  .theme-doc-markdown h2 {
+    font-size: 1.35rem;
+  }
 }
