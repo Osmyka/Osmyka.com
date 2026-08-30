@@ -1,0 +1,292 @@
+/**
+ * ============================================================================
+ * OSMYKA — Docusaurus Custom Theme & Brand Identity Styles
+ * Synchronized with Osmyka design tokens, typography, and dark/light palettes.
+ * ============================================================================
+ */
+
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+:root {
+  --ifm-font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --ifm-font-family-monospace: 'JetBrains Mono', 'Fira Code', SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --ifm-font-size-base: 15.5px;
+  --ifm-line-height-base: 1.7;
+
+  /* Global Brand Colors (Dark Theme default) */
+  --ifm-color-primary: #38e1ff;
+  --ifm-color-primary-dark: #1ce0fc;
+  --ifm-color-primary-darker: #0ed9f9;
+  --ifm-color-primary-darkest: #04bad7;
+  --ifm-color-primary-light: #54e4ff;
+  --ifm-color-primary-lighter: #62e6ff;
+  --ifm-color-primary-lightest: #8deeff;
+
+  --ifm-background-color: #050912;
+  --ifm-background-surface-color: #0b1322;
+  --ifm-card-background-color: #0e1628;
+  --ifm-navbar-background-color: rgba(5, 9, 18, 0.82);
+  --ifm-footer-background-color: #070d1a;
+
+  --ifm-toc-border-color: rgba(125, 180, 255, 0.12);
+  --ifm-hr-border-color: rgba(125, 180, 255, 0.12);
+  --ifm-code-font-size: 88%;
+  --ifm-code-background: rgba(56, 225, 255, 0.08);
+  --ifm-code-border-radius: 6px;
+  --ifm-code-padding-horizontal: 0.35rem;
+  --ifm-code-padding-vertical: 0.15rem;
+
+  --docusaurus-highlighted-code-line-bg: rgba(56, 225, 255, 0.12);
+  
+  --osmyka-cyan: #38e1ff;
+  --osmyka-violet: #8b7bff;
+  --osmyka-line: rgba(125, 180, 255, 0.14);
+  --osmyka-line-strong: rgba(56, 225, 255, 0.35);
+  --osmyka-chip-bg: rgba(125, 180, 255, 0.07);
+}
+
+/* Light Theme Overrides */
+[data-theme='light'] {
+  --ifm-color-primary: #0284c7;
+  --ifm-color-primary-dark: #0277b3;
+  --ifm-color-primary-darker: #0270a9;
+  --ifm-color-primary-darkest: #025d8c;
+  --ifm-color-primary-light: #0391db;
+  --ifm-color-primary-lighter: #0397e5;
+  --ifm-color-primary-lightest: #1ca5ec;
+
+  --ifm-background-color: #f8fafc;
+  --ifm-background-surface-color: #ffffff;
+  --ifm-card-background-color: #ffffff;
+  --ifm-navbar-background-color: rgba(248, 250, 252, 0.88);
+  --ifm-footer-background-color: #f1f5f9;
+
+  --ifm-toc-border-color: rgba(15, 23, 42, 0.08);
+  --ifm-hr-border-color: rgba(15, 23, 42, 0.08);
+  --ifm-code-background: rgba(2, 132, 199, 0.08);
+  --docusaurus-highlighted-code-line-bg: rgba(2, 132, 199, 0.1);
+
+  --osmyka-cyan: #0284c7;
+  --osmyka-violet: #6366f1;
+  --osmyka-line: rgba(15, 23, 42, 0.08);
+  --osmyka-line-strong: rgba(2, 132, 199, 0.35);
+  --osmyka-chip-bg: rgba(15, 23, 42, 0.04);
+}
+
+/* ------------------------------------------------------------- Navbar --- */
+.navbar {
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--osmyka-line);
+  box-shadow: none;
+}
+
+.navbar__title {
+  font-family: var(--ifm-font-family-monospace);
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: -0.03em;
+}
+
+.header-back-main-link {
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 99px;
+  border: 1px solid var(--osmyka-line);
+  background: var(--osmyka-chip-bg);
+  transition: all 0.25s ease;
+  margin-right: 8px;
+}
+
+.header-back-main-link:hover {
+  color: var(--osmyka-cyan) !important;
+  border-color: var(--osmyka-line-strong);
+  text-decoration: none !important;
+  transform: translateX(-2px);
+}
+
+/* ------------------------------------------------------------ Sidebar --- */
+.theme-doc-sidebar-container {
+  border-right: 1px solid var(--osmyka-line) !important;
+}
+
+.menu__link {
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.menu__link--active {
+  font-weight: 700;
+  color: var(--osmyka-cyan) !important;
+}
+
+/* ---------------------------------------------------------- Content --- */
+.theme-doc-markdown h1 {
+  font-size: 2.3rem;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.2rem;
+}
+
+.theme-doc-markdown h2 {
+  font-size: 1.55rem;
+  letter-spacing: -0.01em;
+  margin-top: 2rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--osmyka-line);
+}
+
+.theme-doc-markdown h3 {
+  font-size: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+/* Admonitions & Callouts */
+.alert {
+  border-radius: 12px;
+  border: 1px solid var(--osmyka-line);
+  backdrop-filter: blur(10px);
+}
+
+.alert--info {
+  background-color: rgba(56, 225, 255, 0.06);
+  border-color: rgba(56, 225, 255, 0.25);
+  color: var(--ifm-font-color-base);
+}
+
+[data-theme='light'] .alert--info {
+  background-color: rgba(2, 132, 199, 0.06);
+  border-color: rgba(2, 132, 199, 0.25);
+}
+
+/* ------------------------------------------------------------- Footer --- */
+.footer {
+  border-top: 1px solid var(--osmyka-line);
+  padding: 48px 0 32px;
+}
+
+.footer__title {
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--osmyka-cyan);
+}
+
+.footer__copyright {
+  font-size: 12.5px;
+  color: var(--ifm-color-gray-600);
+  margin-top: 32px;
+  border-top: 1px solid var(--osmyka-line);
+  padding-top: 20px;
+}
+
+/* --------------------------------------------------- Custom Portal UI --- */
+.portal-hero {
+  padding: 80px 0 60px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.portal-hero-title {
+  font-size: clamp(2.2rem, 5vw, 3.4rem);
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+
+.portal-grad {
+  background: linear-gradient(100deg, var(--osmyka-cyan), #7dd3fc 40%, var(--osmyka-violet));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+[data-theme='light'] .portal-grad {
+  background: linear-gradient(100deg, #0284c7 0%, #0369a1 42%, #4f46e5 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.portal-hero-sub {
+  font-size: 1.15rem;
+  color: var(--ifm-color-gray-500);
+  max-width: 680px;
+  margin: 0 auto 32px;
+}
+
+.portal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin-top: 36px;
+}
+
+.portal-card {
+  padding: 28px 24px;
+  border-radius: 16px;
+  border: 1px solid var(--osmyka-line);
+  background: var(--ifm-card-background-color);
+  backdrop-filter: blur(10px);
+  transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none !important;
+  color: inherit !important;
+}
+
+.portal-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--osmyka-line-strong);
+  box-shadow: 0 12px 36px -10px rgba(56, 225, 255, 0.15);
+}
+
+[data-theme='light'] .portal-card:hover {
+  box-shadow: 0 12px 36px -10px rgba(2, 132, 199, 0.12);
+}
+
+.portal-card-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 16px;
+  color: var(--osmyka-cyan);
+  background: rgba(56, 225, 255, 0.08);
+  border: 1px solid rgba(56, 225, 255, 0.2);
+}
+
+[data-theme='light'] .portal-card-icon {
+  background: rgba(2, 132, 199, 0.08);
+  border-color: rgba(2, 132, 199, 0.2);
+}
+
+.portal-card-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.portal-card-desc {
+  font-size: 14.5px;
+  color: var(--ifm-color-gray-500);
+  line-height: 1.55;
+  flex-grow: 1;
+}
+
+.portal-card-link {
+  margin-top: 16px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--osmyka-cyan);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
