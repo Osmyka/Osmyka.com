@@ -30,7 +30,7 @@ The **Osmyka AutoRepair CRM** is an end-to-end operational software suite design
 
 ### 4. 1-Click Billing & PDF Invoicing
 - Instant generation of itemized client estimates and tax invoices.
-- Supports EU VAT standards (0%, 22% EE VAT, reverse charge).
+- Supports EU VAT standards (0%, 24% EE VAT, reverse charge).
 - Direct email dispatch with PDF attachment and online payment gateway links.
 
 ---

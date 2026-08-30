@@ -62,8 +62,8 @@ Content-Type: application/json
   "currentStep": "Engine oil draining & new filter replacement",
   "assignedMechanic": "Dmitri S.",
   "estimatedCompletion": "2026-09-01T11:30:00Z",
-  "totalDueEur": 145.00,
-  "vatIncludedEur": 26.15
+  "totalDueEur": 124.00,
+  "vatIncludedEur": 24.00
 }
 ```
 
