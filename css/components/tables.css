@@ -1,0 +1,174 @@
+/* ==========================================================================
+   OSMYKA — Comparison Table Component System
+   .compare, .compare-table, .col-us, responsive stacked card layout
+   ========================================================================== */
+
+.compare {
+    border-radius: var(--radius-l);
+    border: 1px solid var(--line);
+    background: var(--panel);
+    overflow: hidden;
+    overflow-x: auto;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 640px;
+}
+
+.compare-table th,
+.compare-table td {
+    text-align: left;
+    padding: 18px 22px;
+    vertical-align: top;
+    border-bottom: 1px solid var(--line);
+    font-size: 14.6px;
+}
+
+.compare-table thead th {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-strong);
+    background: var(--chip-bg);
+    border-bottom-color: var(--line);
+}
+
+.compare-table thead th span {
+    display: block;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--dim);
+    letter-spacing: 0.04em;
+    margin-top: 4px;
+}
+
+.compare-table tbody th {
+    color: var(--text-strong);
+    font-weight: 700;
+    width: 22%;
+}
+
+.compare-table tbody td {
+    color: var(--muted);
+}
+
+.compare-table tbody tr:last-child th,
+.compare-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.compare-table tbody tr {
+    transition: background-color 0.25s;
+}
+
+.compare-table tbody tr:hover {
+    background: rgba(56, 225, 255, 0.04);
+}
+
+[data-theme="light"] .compare-table tbody tr:hover {
+    background: rgba(2, 132, 199, 0.04);
+}
+
+/* ----------------------------------------------------------- Highlight --- */
+.col-us {
+    background: rgba(56, 225, 255, 0.06);
+    position: relative;
+}
+
+[data-theme="light"] .col-us {
+    background: rgba(2, 132, 199, 0.05);
+}
+
+.compare-table thead .col-us {
+    background: rgba(56, 225, 255, 0.11);
+    color: var(--cyan);
+}
+
+[data-theme="light"] .compare-table thead .col-us {
+    background: rgba(2, 132, 199, 0.12);
+    color: var(--cyan);
+}
+
+.compare-table tbody td.col-us {
+    color: var(--text-strong);
+}
+
+[data-theme="light"] .compare-table tbody td.col-us {
+    color: #0f172a;
+    font-weight: 500;
+}
+
+.compare-table tbody td.col-us::before {
+    content: '✓';
+    color: var(--green);
+    font-weight: 700;
+    margin-right: 9px;
+}
+
+/* ------------------------------------------------- Mobile Stacked Cards --- */
+@media (max-width: 720px) {
+    .compare {
+        overflow: visible;
+        border: none;
+        background: none;
+        backdrop-filter: none;
+    }
+
+    .compare-table,
+    .compare-table tbody,
+    .compare-table tr,
+    .compare-table th,
+    .compare-table td {
+        display: block;
+        width: 100%;
+        min-width: 0;
+    }
+
+    .compare-table thead {
+        display: none;
+    }
+
+    .compare-table tbody tr {
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--panel);
+        margin-bottom: 14px;
+        overflow: hidden;
+    }
+
+    .compare-table tbody th {
+        width: 100%;
+        background: var(--chip-bg);
+        border-bottom: 1px solid var(--line);
+        padding: 14px 18px;
+    }
+
+    .compare-table tbody td {
+        padding: 14px 18px;
+        border-bottom: none;
+    }
+
+    .compare-table tbody td::after {
+        content: none;
+    }
+
+    .compare-table tbody td[data-label]::before {
+        content: attr(data-label);
+        display: block;
+        font-family: var(--mono);
+        font-size: 10.5px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--dim);
+        margin-bottom: 5px;
+    }
+
+    .compare-table tbody td.col-us::before {
+        content: attr(data-label) ' ✓';
+        color: var(--cyan);
+    }
+}
