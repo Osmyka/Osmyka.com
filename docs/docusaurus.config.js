@@ -152,7 +152,7 @@ const config = {
             ],
           },
         ],
-        copyright: `© ${new Date().getFullYear()} Osmyka OÜ · Reg. 17351656 · Harju maakond, Tallinn, Kristiine linnaosa, Tulika tn 19, 10613, Estonia. All rights reserved.`,
+        copyright: `© ${new Date().getFullYear()} Osmyka OÜ. All rights reserved.`,
       },
     }),
 };
