@@ -53,12 +53,12 @@ const config = {
       colorMode: {
         defaultMode: 'dark',
         disableSwitch: false,
-        respectPrefersColorScheme: true,
+        respectPrefersColorScheme: false,
       },
       navbar: {
         title: 'osmyka',
         logo: {
-          alt: 'Osmyka OÜ',
+          alt: 'Osmyka',
           src: 'img/logo.svg',
           width: 28,
           height: 28,
@@ -82,10 +82,9 @@ const config = {
             position: 'left',
           },
           {
-            href: '/',
-            label: '← Main Site',
+            type: 'html',
             position: 'right',
-            className: 'header-back-main-link',
+            value: '<a class="navbar__item navbar__link header-back-main-link" href="/" target="_self">← Main Site</a>',
           },
         ],
       },
