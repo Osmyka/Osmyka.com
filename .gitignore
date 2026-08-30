@@ -1,5 +1,12 @@
 # Dependencies
 node_modules/
+docs/node_modules/
+
+# Local build artifacts
+dist/
+.docusaurus/
+docs/.docusaurus/
+docs/build/
 
 # Local tooling / OS
 .claude/settings.local.json

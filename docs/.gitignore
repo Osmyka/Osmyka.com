@@ -1,0 +1,13 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Docusaurus build and cache
+.docusaurus/
+build/
+.cache-loader
+
+# OS / Tooling
+.DS_Store
+Thumbs.db
+*.log

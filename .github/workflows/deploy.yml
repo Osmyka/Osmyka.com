@@ -1,6 +1,6 @@
 name: Deploy to Cloudflare Pages
 
-# Publishes the site to the existing Cloudflare Pages project "osmyka"
+# Publishes the site and Docusaurus Knowledge Hub to Cloudflare Pages project "osmyka"
 # (Direct Upload project, production branch: main) on every push to main.
 #
 # Required repository secrets (Settings -> Secrets and variables -> Actions):
@@ -28,8 +28,19 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Build documentation hub (Docusaurus)
+        working-directory: docs
+        run: |
+          npm ci
+          npm run build
+
       # Copy only the files that belong on the live site. Anything not listed
-      # here (README, _archive, .claude, workflows) stays out of the upload.
+      # here stays out of the upload.
       #
       # The ?v=dev stamp on the CSS/JS URLs is rewritten to the commit SHA, so a
       # deploy always produces fresh asset URLs instead of serving cached copies
@@ -38,6 +49,8 @@ jobs:
         run: |
           mkdir -p dist
           cp -r *.html privacy terms legal css js favicon.svg robots.txt sitemap.xml _headers _redirects dist/
+          mkdir -p dist/docs
+          cp -r docs/build/* dist/docs/
           find dist -name "*.html" -exec sed -i "s/?v=dev/?v=${GITHUB_SHA::8}/g" {} +
           grep -o 'href="[^"]*css[^"]*"\|src="[^"]*js[^"]*"' dist/index.html
           ls -R dist
