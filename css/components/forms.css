@@ -1,0 +1,190 @@
+/* ==========================================================================
+   OSMYKA — Form Component System
+   .contact-form, .field, .field-row, .radio-row, .radio, .err, .form-status, .form-legal
+   ========================================================================== */
+
+.contact-form {
+    padding: 30px;
+    border-radius: var(--radius-l);
+    border: 1px solid var(--line);
+    background: var(--panel);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: var(--shadow);
+    display: grid;
+    gap: 16px;
+}
+
+.field {
+    display: grid;
+    gap: 7px;
+}
+
+.field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+.contact-form label,
+.contact-form legend {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+    padding: 0;
+}
+
+.contact-form input,
+.contact-form textarea {
+    width: 100%;
+    font-family: inherit;
+    font-size: 15px;
+    color: var(--text-strong);
+    padding: 12px 14px;
+    border-radius: 11px;
+    border: 1px solid var(--input-border);
+    background: var(--input-bg);
+    transition: border-color 0.25s, box-shadow 0.25s, background-color 0.25s;
+}
+
+.contact-form textarea {
+    resize: vertical;
+    min-height: 96px;
+}
+
+.contact-form input::placeholder,
+.contact-form textarea::placeholder {
+    color: var(--input-placeholder);
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+    outline: none;
+    border-color: var(--line-strong);
+    box-shadow: 0 0 0 3px rgba(56, 225, 255, 0.14);
+    background: var(--input-bg-focus);
+}
+
+[data-theme="light"] .contact-form input:focus,
+[data-theme="light"] .contact-form textarea:focus {
+    border-color: var(--cyan);
+    box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+}
+
+.contact-form input[aria-invalid="true"] {
+    border-color: #f87171;
+}
+
+/* ----------------------------------------------------------- Radio Row --- */
+.radio-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-top: 4px;
+}
+
+.radio {
+    position: relative;
+}
+
+.radio input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.radio span {
+    display: inline-block;
+    cursor: pointer;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--muted);
+    padding: 9px 15px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: var(--chip-bg);
+    transition: all 0.25s var(--ease);
+}
+
+.radio span:hover {
+    border-color: var(--line-strong);
+    color: var(--text-strong);
+}
+
+.radio input:checked + span {
+    color: var(--btn-primary-text);
+    font-weight: 700;
+    background: var(--btn-primary-bg);
+    border-color: transparent;
+    box-shadow: var(--btn-primary-shadow);
+}
+
+.radio input:focus-visible + span {
+    outline: 2px solid var(--cyan);
+    outline-offset: 3px;
+}
+
+/* ---------------------------------------------------- Status & Feedback --- */
+.err {
+    font-size: 12.5px;
+    color: #f87171;
+    min-height: 0;
+}
+
+[data-theme="light"] .err {
+    color: #dc2626;
+    font-weight: 600;
+}
+
+.err:empty {
+    display: none;
+}
+
+.form-note {
+    font-size: 12.5px;
+    color: var(--dim);
+    text-align: center;
+}
+
+.form-status {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--green);
+    text-align: center;
+}
+
+.form-status:empty {
+    display: none;
+}
+
+.form-legal {
+    font-size: 12px;
+    color: var(--dim);
+    text-align: center;
+    margin-top: -4px;
+}
+
+.form-legal a {
+    color: var(--muted);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: color 0.2s;
+}
+
+.form-legal a:hover {
+    color: var(--cyan);
+}
+
+@media (max-width: 760px) {
+    .field-row {
+        grid-template-columns: 1fr;
+    }
+}

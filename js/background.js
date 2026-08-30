@@ -1,11 +1,13 @@
 /**
- * Osmyka — hero background.
- * Lightweight canvas particle network (no external libraries, ~3 KB).
- * Supports dynamic Dark / Light theme palettes with themechange event.
- * Degrades gracefully: disabled for reduced-motion users and low-power devices,
- * paused when the hero scrolls out of view or the tab is hidden.
+ * ============================================================================
+ * OSMYKA — Hero Background Particle Canvas
+ * Lightweight, GPU-friendly interactive particle network.
+ * Supports dynamic Dark / Light theme palettes via themechange events.
+ * Features layout caching, zero-overhead idle pausing, and reduced-motion safety.
+ * ============================================================================
  */
-(function () {
+
+(function (window, document) {
     'use strict';
 
     var canvas = document.getElementById('bgCanvas');
@@ -22,10 +24,13 @@
 
     var ctx = canvas.getContext('2d', { alpha: true });
     var hero = canvas.parentElement;
+    if (!hero) return;
+
     var isMobile = window.innerWidth < 768;
     var dpr = Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2);
 
     var w = 0, h = 0;
+    var heroRect = null;
     var nodes = [];
     var pointer = { x: -9999, y: -9999, active: false };
     var running = true;
@@ -77,9 +82,9 @@
     }
 
     function resize() {
-        var rect = hero.getBoundingClientRect();
-        w = Math.max(rect.width, 1);
-        h = Math.max(rect.height, 1);
+        heroRect = hero.getBoundingClientRect();
+        w = Math.max(heroRect.width, 1);
+        h = Math.max(heroRect.height, 1);
         canvas.width = Math.round(w * dpr);
         canvas.height = Math.round(h * dpr);
         canvas.style.width = w + 'px';
@@ -106,7 +111,7 @@
             if (a.y < -20) a.y = h + 20;
             else if (a.y > h + 20) a.y = -20;
 
-            // soft repulsion around the pointer
+            // Soft repulsion around pointer
             if (pointer.active) {
                 dx = a.x - pointer.x;
                 dy = a.y - pointer.y;
@@ -120,7 +125,7 @@
             }
         }
 
-        // links
+        // Particle connections
         ctx.lineWidth = 1;
         for (i = 0; i < nodes.length; i++) {
             a = nodes[i];
@@ -139,7 +144,7 @@
             }
         }
 
-        // nodes
+        // Particle nodes
         for (i = 0; i < nodes.length; i++) {
             a = nodes[i];
             ctx.fillStyle = 'rgba(' + (a.violet ? VIOLET : CYAN) + ', ' + NODE_ALPHA + ')';
@@ -152,37 +157,64 @@
     }
 
     function start() {
-        if (rafId === null && running && visible) rafId = window.requestAnimationFrame(frame);
+        if (rafId === null && running && visible) {
+            rafId = window.requestAnimationFrame(frame);
+        }
     }
 
-    // ---- events -----------------------------------------------------------
+    function stop() {
+        if (rafId !== null) {
+            window.cancelAnimationFrame(rafId);
+            rafId = null;
+        }
+    }
+
+    // Event listeners
     var resizeTimer = null;
     window.addEventListener('resize', function () {
         window.clearTimeout(resizeTimer);
-        resizeTimer = window.setTimeout(function () { resize(); start(); }, 180);
+        resizeTimer = window.setTimeout(function () {
+            resize();
+            start();
+        }, 180);
     });
 
+    window.addEventListener('scroll', function () {
+        heroRect = null; // Invalidate cached rect on scroll
+    }, { passive: true });
+
     hero.addEventListener('pointermove', function (e) {
-        var rect = hero.getBoundingClientRect();
-        pointer.x = e.clientX - rect.left;
-        pointer.y = e.clientY - rect.top;
+        if (!heroRect) heroRect = hero.getBoundingClientRect();
+        pointer.x = e.clientX - heroRect.left;
+        pointer.y = e.clientY - heroRect.top;
         pointer.active = true;
     }, { passive: true });
 
-    hero.addEventListener('pointerleave', function () { pointer.active = false; });
+    hero.addEventListener('pointerleave', function () {
+        pointer.active = false;
+    });
 
     document.addEventListener('visibilitychange', function () {
         running = !document.hidden;
-        start();
+        if (running) start(); else stop();
     });
 
     if ('IntersectionObserver' in window) {
         new IntersectionObserver(function (entries) {
             visible = entries[0].isIntersecting;
-            start();
+            if (visible) start(); else stop();
         }, { threshold: 0 }).observe(hero);
     }
 
     resize();
     start();
-})();
+
+    // Expose background controller if namespace exists
+    if (window.Osmyka) {
+        window.Osmyka.Background = {
+            start: start,
+            stop: stop,
+            resize: resize
+        };
+    }
+})(window, document);
