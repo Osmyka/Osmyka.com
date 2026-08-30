@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://osmyka.com/sitemap.xml
+Sitemap: https://osmyka.com/docs/sitemap.xml
