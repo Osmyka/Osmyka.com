@@ -16,7 +16,7 @@ The Osmyka platform exposes a lightweight, authenticated REST API and Webhook su
 All API requests must include your secret API key in the `Authorization` header:
 
 ```http
-Authorization: Bearer osm_sec_live_99a8b7c6d5e4f3
+Authorization: Bearer YOUR_API_KEY
 Content-Type: application/json
 ```
 
